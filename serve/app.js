@@ -8,6 +8,7 @@ require('./mongooseConfig.js');
 var indexRouter = require('./routes/index');
 var adminUsersRouter = require('./routes/AdminUsers');
 var usersRouter = require('./routes/Users');
+var uploadFileRouter = require('./routes/UploadFile');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/adminUsers', adminUsersRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/uploadFile', uploadFileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -16,7 +16,7 @@
             <el-form-item label="网站ICON">
                 <el-upload
                         class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :action="form.icon.uploadUrl"
                         :on-success="handleUploadSuccess"
                         :on-remove="handleUploadRemove"
                         :on-error="handleUploadError"
@@ -67,10 +67,11 @@ export default {
                 keyword: '',
                 describe: '',
                 icon: {
+                    uploadUrl:this.$$http.fileUploadUrl,
                     limit:1,
                     fileList:[],
                     type:'picture',
-                    url:'http://n.sinaimg.cn/ent/transform/20170718/Ovfs-fyiakwa4435412.jpg'
+                    url:'http://n.sinaimg.cn/ent/transform/20170718/Ovfs-fyiakwa4435412.jpg',
                 },
                 copyrightInformation: '',
                 InternetContentProvider: '',

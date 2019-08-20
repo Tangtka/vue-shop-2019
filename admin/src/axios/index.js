@@ -2,7 +2,7 @@ import Axios from 'axios';
 import qs from 'qs';
 
 const baseUrl = 'http://192.168.1.102:3001';
-const fileUploadUrl = '';
+const fileUploadUrl = 'http://192.168.1.102:3001/api/uploadFile';
 const fileProjectName = '';
 const baseImgUrl = 'http://xxxx.org.cn:59889';
 
@@ -104,4 +104,5 @@ export default {
     POST : post,
     uploadFile : uploadFile,
     baseImgUrl:baseImgUrl,
+    fileUploadUrl:fileUploadUrl
 }
