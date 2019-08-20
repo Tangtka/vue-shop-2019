@@ -1,27 +1,96 @@
 var express = require('express');
 var router = express.Router();
-var Users = require('../models/Users.js');
-// var redis = require('../redis/index.js');
+var AdminUsers = require('../models/AdminUsers.js');
+var redis = require('../redis/index.js');
 
-var displayField={
-    userId: 1,
-    userName: 1,
-    userPwd: 1,
-    authorityAll: 1,
-    _id: 0
-};
 
-// 查询用户列表
-router.get('/queryUsers', function (req, res, next) {
+//判断是否登录
+router.get('/loginCheck', function (req, res, next) {
+    var userId = req.param("userId");
+    redis.findKey(userId,function(redisErr,redisRes){
+        if(redisErr){
+            res.json({
+                status: '0',
+                msg: redisErr
+            })
+        }else{
+            if(redisRes === 'OK'){
+                res.json({
+                    status: '1',
+                    msg: '已登录'
+                })
+            }else{
+                res.json({
+                    status: '0',
+                    msg: '未登录'
+                })
+            }
+        }
+    })
+
+});
+
+//登录
+router.post('/login', function (req, res, next) {
+    var userName = req.param("userName");
+    var userPwd = req.param("userPwd");
+
+    AdminUsers.findOne({
+        userName: userName,
+        userPwd:userPwd
+    },{
+        authorityAll: 1,
+        userId: 1,
+        userName: 1,
+        userPwd: 1,
+        _id: 0
+    }, function (err, admin) {
+        if(err){
+            res.json({
+                status: '0',
+                msg: err.message
+            })
+        }else{
+            if(admin){
+                redis.addKey(admin.userId,admin.userName,function (redisErr,redisRes) {
+                    console.log(redisRes)
+                    if(redisRes === 'OK'){
+                        res.json({
+                            status: '1',
+                            msg: '',
+                            data: admin
+                        });
+                    }else{
+                        res.json({
+                            status: '0',
+                            msg: '登录失败'
+                        })
+                    }
+
+                })
+            }else{
+                res.json({
+                    status: '0',
+                    msg: '没有该用户'
+                })
+            }
+
+        }
+    })
+
+});
+
+// 查询管理员列表
+router.get('/queryAdmin', function (req, res, next) {
     var totalCount = 0;
     var searchText = req.param("searchText");
     var pageNum = parseInt(req.param("pageNum"));
     var pageSize = parseInt(req.param("pageSize"));
     var skip = (pageNum - 1) * pageSize;
 
-    Users.find({
+    AdminUsers.find({
         userName: new RegExp(searchText, 'i')
-    }, function (err, users) {
+    }, function (err, admin) {
         if (err) {
 
             res.json({
@@ -30,16 +99,22 @@ router.get('/queryUsers', function (req, res, next) {
             })
 
         } else {
-            totalCount = users.length;
+            totalCount = admin.length;
 
-            Users.find({
+            AdminUsers.find({
                 userName: new RegExp(searchText, 'i')
-            }, displayField).skip(skip).limit(pageSize).exec(function (userErr, userData) {
-                if (userErr) {
+            }, {
+                authorityAll: 1,
+                userId: 1,
+                userName: 1,
+                userPwd: 1,
+                _id: 0
+            }).skip(skip).limit(pageSize).exec(function (err, admin) {
+                if (err) {
 
                     res.json({
                         status: '0',
-                        msg: userErr.message
+                        msg: err.message
                     })
 
                 } else {
@@ -47,7 +122,7 @@ router.get('/queryUsers', function (req, res, next) {
                         status: '1',
                         msg: '',
                         totalCount: totalCount,
-                        data: userData
+                        data: admin
                     })
                 }
             })
@@ -56,8 +131,8 @@ router.get('/queryUsers', function (req, res, next) {
 
 });
 
-//添加用户
-router.post('/addUsers', function (req, res, next) {
+//添加管理员
+router.post('/addAdmin', function (req, res, next) {
     var userName = req.body.userName;
     var userPwd = req.body.userPwd;
     var userType = req.body.userType;
@@ -80,16 +155,16 @@ router.post('/addUsers', function (req, res, next) {
         })
     }
 
-    Users.findOne({
+    AdminUsers.findOne({
         userName: userName
-    }, function (err, user) {
+    }, function (err, admin) {
         if (err) {
             res.json({
                 status: '0',
                 msg: err.message
             })
         } else {
-            if (user) {
+            if (admin) {
                 res.json({
                     status: '0',
                     msg: '已存在该用户'
@@ -97,14 +172,14 @@ router.post('/addUsers', function (req, res, next) {
             } else {
                 var userId = '875' + new Date().getTime();
 
-                var userInfo = {
+                var user = {
                     userId: userId,
                     userPwd: userPwd,
                     userName: userName,
-                    authorityAll:userType
+                    authorityAll: userType
                 };
 
-                Users.create(userInfo, function (addErr, addUser) {
+                AdminUsers.create(user, function (addErr, addAdmin) {
                     if (addErr) {
                         res.json({
                             status: '0',
@@ -124,13 +199,19 @@ router.post('/addUsers', function (req, res, next) {
 
 });
 
-// 查询用户
-router.get('/UsersDetails', function (req, res, next) {
+// 查询管理员
+router.get('/adminDetails', function (req, res, next) {
     var userId = parseInt(req.param("userId"));
 
-    Users.findOne({
+    AdminUsers.findOne({
         userId: userId
-    }, displayField, function (err, user) {
+    }, {
+        authorityAll: 1,
+        userId: 1,
+        userName: 1,
+        userPwd: 1,
+        _id: 0
+    }, function (err, admin) {
         if (err) {
 
             res.json({
@@ -140,11 +221,11 @@ router.get('/UsersDetails', function (req, res, next) {
 
         } else {
 
-            if (user) {
+            if (admin) {
                 res.json({
                     status: '1',
                     msg: '',
-                    data: user
+                    data: admin
                 })
             } else {
                 res.json({
@@ -158,8 +239,8 @@ router.get('/UsersDetails', function (req, res, next) {
 
 });
 
-//用户信息修改
-router.post('/editUsers', function (req, res, next) {
+//管理员信息修改
+router.post('/editAdmin', function (req, res, next) {
     var userName = req.body.userName;
     var userPwd = req.body.userPwd;
     var userType = req.body.userType;
@@ -183,32 +264,32 @@ router.post('/editUsers', function (req, res, next) {
         })
     }
 
-    Users.findOne({
+    AdminUsers.findOne({
         userId: userId
-    }, function (err, user) {
+    }, function (err, admin) {
         if (err) {
             res.json({
                 status: '0',
                 msg: err.message
             })
         } else {
-            if (user) {
-                Users.findOne({
+            if (admin) {
+                AdminUsers.findOne({
                     userName: userName
-                }, function (queryErr, queryUser) {
+                }, function (queryErr, queryAdmin) {
                     if (queryErr) {
                         res.json({
                             status: '0',
                             msg: queryErr.message
                         })
                     } else {
-                        user.userName = userName;
-                        user.userPwd = userPwd;
-                        user.authorityAll = userType;
+                        admin.userName = userName;
+                        admin.userPwd = userPwd;
+                        admin.authorityAll = userType;
 
-                        if (queryUser) {
-                            if(queryUser.userId === userId){
-                                user.save(function (editErr,editUser) {
+                        if (queryAdmin) {
+                            if(queryAdmin.userId === userId){
+                                admin.save(function (editErr,editAdmin) {
                                     if (editErr) {
                                         res.json({
                                             status: '0',
@@ -229,7 +310,7 @@ router.post('/editUsers', function (req, res, next) {
                             }
 
                         } else {
-                            user.save(function (editErr,editAdmin) {
+                            admin.save(function (editErr,editAdmin) {
                                 if (editErr) {
                                     res.json({
                                         status: '0',
@@ -259,13 +340,13 @@ router.post('/editUsers', function (req, res, next) {
 
 });
 
-//用户信息删除
-router.post('/delUsers', function (req, res, next) {
+//管理员信息删除
+router.post('/delAdmin', function (req, res, next) {
     var userId = req.body.userId;
 
-    Users.deleteOne({
+    AdminUsers.deleteOne({
         userId: userId
-    }, function (err, user) {
+    }, function (err, admin) {
         if (err) {
             res.json({
                 status: '0',
@@ -273,7 +354,7 @@ router.post('/delUsers', function (req, res, next) {
             })
         } else {
 
-            if (user) {
+            if (admin) {
                 res.json({
                     status: '1',
                     msg: '删除成功'

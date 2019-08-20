@@ -24,7 +24,7 @@
                     </el-form-item>
 
                     <div class="btn-box">
-                        <el-button type="primary" @click="submit">登 录</el-button>
+                        <el-button type="primary" @click="submitLogin">登 录</el-button>
                     </div>
                 </el-form>
             </div>
@@ -33,21 +33,36 @@
 </template>
 
 <script>
+    import {setLocalStorage} from './../../util/storage.js'
     export default {
         name: "Login",
         components: {},
         data() {
             return {
-                userName:'lkalka',
-                userPwd:'123456'
+                userName:'',
+                userPwd:''
             }
         },
         mounted() {
 
         },
         methods: {
-            submit(){
-
+            submitLogin(){
+                this.$$http.POST('/api/adminUsers/login', {
+                    userName: this.userName,
+                    userPwd:this.userPwd
+                }, (respData) => {
+                    if (respData.status === '1') {
+                        setLocalStorage('userInfo',respData.data);
+                        this.$router.replace('/');
+                    } else {
+                        this.$message({
+                            message: respData.msg,
+                            type: 'error',
+                            duration: 2000
+                        });
+                    }
+                })
             },
 
         }

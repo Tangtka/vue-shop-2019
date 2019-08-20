@@ -138,7 +138,6 @@
                     size: 10,
                     totalCount: 0
                 },
-                adminDataTotal: 0,
                 tableLoading: false,
                 searchForm: {
                     text: ''
@@ -151,11 +150,12 @@
                 },
                 adminType:[
                     {
-                        value: '0',
-                        label: '管理员'
-                    }, {
                         value: '1',
                         label: '超级管理员'
+                    },
+                    {
+                        value: '2',
+                        label: '管理员'
                     }],
                 isDialogShow: false,
                 adminDetail:{},
@@ -168,7 +168,7 @@
         methods: {
             getAdminUsers() {
                 this.tableLoading = true;
-                this.$$http.GET('/api/users/queryAdmin', {
+                this.$$http.GET('/api/adminUsers/queryAdmin', {
                     searchText: this.searchForm.text,
                     pageNum: this.page.num,
                     pageSize: this.page.size,
@@ -223,7 +223,7 @@
                     this.addForm.btnLoading = false;
                     return
                 }
-                this.$$http.POST('/api/users/addAdmin', {
+                this.$$http.POST('/api/adminUsers/addAdmin', {
                     userType: this.addForm.value,
                     userName: this.addForm.name,
                     userPwd: this.addForm.pwd,
@@ -262,7 +262,7 @@
                         this.openDialogEdit();
                         break
                 }
-                this.$$http.GET('/api/users/adminDetails', {
+                this.$$http.GET('/api/adminUsers/adminDetails', {
                     userId: userId,
                 }, (respData) => {
                     if (respData.status === '1') {
@@ -304,7 +304,7 @@
                     this.addForm.btnLoading = false;
                     return
                 }
-                this.$$http.POST('/api/users/editAdmin', {
+                this.$$http.POST('/api/adminUsers/editAdmin', {
                     userId:userId,
                     userType: this.adminDetail.authorityAll,
                     userName: this.adminDetail.userName,
@@ -334,7 +334,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$$http.POST('/api/users/delAdmin', {
+                    this.$$http.POST('/api/adminUsers/delAdmin', {
                         userId:userId,
                     }, (respData) => {
                         if (respData.status === '1') {
@@ -386,8 +386,3 @@
     }
 </style>
 
-<style>
-    .el-pager li {
-        font-weight: normal !important;
-    }
-</style>

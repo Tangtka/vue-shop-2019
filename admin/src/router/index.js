@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import {getLocalStorage} from "../util/storage.js";
 
 Vue.use(Router);
 const router = new Router({
@@ -29,6 +30,32 @@ const router = new Router({
             path: '/index',
             name: 'Index',
             component: () => import('./../views/index/Index.vue'),
+            children:[
+                //系统设置
+                {
+                    path: '/system',
+                    name: 'System',
+                    component: () => import('./../views/system/System.vue'),
+                },
+                //产品设置
+                {
+                    path: '/product',
+                    name: 'Product',
+                    component: () => import('./../views/product/Product.vue'),
+                },
+                //用户管理
+                {
+                    path: '/users',
+                    name: 'Users',
+                    component: () => import('./../views/users/Users.vue'),
+                },
+                //管理员管理
+                {
+                    path: '/admin',
+                    name: 'Admin',
+                    component: () => import('./../views/users/Admin.vue'),
+                },
+            ],
         },
         //登录页
         {
@@ -36,30 +63,7 @@ const router = new Router({
             name: 'Login',
             component: () => import('./../views/login/Login.vue'),
         },
-        //系统设置
-        {
-            path: '/system',
-            name: 'System',
-            component: () => import('./../views/system/System.vue'),
-        },
-        //产品设置
-        {
-            path: '/product',
-            name: 'Product',
-            component: () => import('./../views/product/Product.vue'),
-        },
-        //用户管理
-        {
-            path: '/users',
-            name: 'Users',
-            component: () => import('./../views/users/Users.vue'),
-        },
-        //管理员管理
-        {
-            path: '/admin',
-            name: 'Admin',
-            component: () => import('./../views/users/Admin.vue'),
-        },
+
 
 
 
@@ -68,21 +72,29 @@ const router = new Router({
 });
 
 // 判断是否需要登录权限以及是否登录
-/*router.beforeEach((to, from, next) => {
-    Vue.prototype.$$http.GET('/users/loginCheck',{},(respData)=>{
-        if(respData.status === '1'){
-            next();
-
-        }else{
-            if(to.fullPath === '/login'){
-                next()
-            } else {
+router.beforeEach((to, from, next) => {
+    let userInfo = getLocalStorage('userInfo');
+    if(to.name === 'Login'){
+        next()
+    }else{
+        Vue.prototype.$$http.GET('/api/adminUsers/loginCheck',{
+            userId: userInfo.userId
+        },(respData)=>{
+            if(respData.status === '1'){
+                next();
+            }else if(respData.status === '0'){
                 next({path: '/login'})
+            }else{
+                if(to.fullPath === '/login'){
+                    next()
+                } else {
+                    next({path: '/login'})
+                }
             }
-        }
-    })
+        })
+    };
 
-});*/
+});
 
 
 export default router;
