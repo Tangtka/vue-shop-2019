@@ -7,4 +7,4 @@ var adminSchema = new mongoose.Schema({
     "authorityAll" : String
 });
 
-module.exports = mongoose.model('admin-user',adminSchema);
+module.exports = mongoose.model('admin_user',adminSchema);

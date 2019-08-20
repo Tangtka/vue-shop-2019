@@ -76,6 +76,8 @@ router.beforeEach((to, from, next) => {
     let userInfo = getLocalStorage('userInfo');
     if(to.name === 'Login'){
         next()
+    }else if(!userInfo){
+        next({path: '/login'})
     }else{
         Vue.prototype.$$http.GET('/api/adminUsers/loginCheck',{
             userId: userInfo.userId

@@ -1,10 +1,10 @@
 import Axios from 'axios';
 import qs from 'qs';
 
-const baseUrl = 'http://192.168.1.102:3001';
-const fileUploadUrl = 'http://192.168.1.102:3001/api/uploadFile';
+const baseUrl = 'http://localhost:3001';
+const fileUploadUrl = 'http://xxx.org.cn:3001/api/uploadFile';
 const fileProjectName = '';
-const baseImgUrl = 'http://xxxx.org.cn:59889';
+const baseImgUrl = 'http://xxx.org.cn:59889/file/uploadImg/';
 
 const axios = Axios.create({
     baseURL: baseUrl,
