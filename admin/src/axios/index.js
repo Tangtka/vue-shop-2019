@@ -1,10 +1,6 @@
 import Axios from 'axios';
 import qs from 'qs';
-
-const baseUrl = 'http://localhost:3001';
-const fileUploadUrl = 'http://xxx.org.cn:3001/api/uploadFile';
-const fileProjectName = '';
-const baseImgUrl = 'http://xxx.org.cn:59889/file/uploadImg/';
+import {baseUrl} from './../assets/js/config.js'
 
 const axios = Axios.create({
     baseURL: baseUrl,
@@ -102,7 +98,5 @@ const requestError = (error) => {
 export default {
     GET : get,
     POST : post,
-    uploadFile : uploadFile,
-    baseImgUrl:baseImgUrl,
-    fileUploadUrl:fileUploadUrl
+    uploadFile : uploadFile
 }

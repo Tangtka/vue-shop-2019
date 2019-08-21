@@ -53,7 +53,6 @@ router.post('/login', function (req, res, next) {
         }else{
             if(admin){
                 redis.addKey(admin.userId,admin.userName,function (redisErr,redisRes) {
-                    console.log(redisRes)
                     if(redisRes === 'OK'){
                         res.json({
                             status: '1',
