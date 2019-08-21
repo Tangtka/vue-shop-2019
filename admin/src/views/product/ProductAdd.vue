@@ -49,9 +49,9 @@
 
             <el-form-item label="封面图">
                 <el-upload
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-success="handleUploadSuccess"
-                        :on-remove="handleUploadRemove"
+                        :action="productImg.uploadUrl"
+                        :on-success="handleUploadSuccessImg"
+                        :on-remove="handleUploadRemoveImg"
                         :on-error="handleUploadError"
                         :on-exceed="handleUploadExceed"
                         :file-list="productImg.fileList"
@@ -63,9 +63,9 @@
 
             <el-form-item label="广告图">
                 <el-upload
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-success="handleUploadSuccess"
-                        :on-remove="handleUploadRemove"
+                        :action="productImgList.uploadUrl"
+                        :on-success="handleUploadSuccessImgList"
+                        :on-remove="handleUploadRemoveImgList"
                         :on-error="handleUploadError"
                         :on-exceed="handleUploadExceed"
                         :file-list="productImgList.fileList"
@@ -77,7 +77,7 @@
 
 
             <el-form-item>
-                <el-button type="primary" @click="">保存</el-button>
+                <el-button type="primary" @click="submitForm">保存</el-button>
                 <el-button>取消</el-button>
             </el-form-item>
         </el-form>
@@ -85,6 +85,7 @@
 </template>
 
 <script>
+    import {fileUploadUrl} from './../../assets/js/config.js'
     export default {
         name: "ProductAdd",
         components: {},
@@ -97,7 +98,7 @@
                     productType: '',
                     productPrice: '',
                     productImg: '',
-                    productImgList: '',
+                    productImgList: [],
                     merchantId: '',
                     merchantName: '',
                     creationTime: '',
@@ -110,13 +111,13 @@
                     {value: 3, label: '服装'}
                 ],
                 productImg: {
-                    uploadUrl: '',
+                    uploadUrl: fileUploadUrl,
                     limit: 1,
                     fileList: [],
                     type: 'picture-card',
                 },
-                productImgList:{
-                    uploadUrl: '',
+                productImgList: {
+                    uploadUrl: fileUploadUrl,
                     limit: 6,
                     fileList: [],
                     type: 'picture-card',
@@ -127,7 +128,44 @@
 
         },
         methods: {
-            handleUploadSuccess(response, file, fileList) {
+            submitForm() {
+                this.$$http.POST('/api/product/add', this.formData, (respData) => {
+                    if (respData.status === '1') {
+                        console.log(respData);
+                        this.$message({
+                            message: respData.msg,
+                            type: 'success',
+                            duration: 2000
+                        });
+                        this.formData = {
+                            productName: '',
+                            productBrief: '',
+                            productDescribe: '',
+                            productType: '',
+                            productPrice: '',
+                            productImg: '',
+                            productImgList: [],
+                            merchantId: '',
+                            merchantName: '',
+                            creationTime: '',
+                            isNews: false,
+                            isHot: false
+                        }
+                        this.productImg.fileList= [];
+                        this.productImgList.fileList= [];
+                    } else {
+                        this.$message({
+                            message: respData.msg,
+                            type: 'error',
+                            duration: 2000
+                        });
+                    }
+                    this.addForm.btnLoading = false;
+                })
+            },
+
+            handleUploadSuccessImg(response, file, fileList) {
+                this.formData.productImg = response.data;
                 this.$message({
                     message: '上传成功',
                     type: 'success',
@@ -135,7 +173,30 @@
                     duration: 2000
                 });
             },
-            handleUploadRemove(file, fileList) {
+            handleUploadSuccessImgList(response, file, fileList) {
+                this.formData.productImgList.push(response.data);
+                this.$message({
+                    message: '上传成功',
+                    type: 'success',
+                    center: true,
+                    duration: 2000
+                });
+            },
+            handleUploadRemoveImg(file, fileList) {
+                this.formData.productImg ='';
+                this.$message({
+                    message: '删除成功',
+                    type: 'success',
+                    center: true,
+                    duration: 2000
+                });
+            },
+            handleUploadRemoveImgList(file, fileList) {
+                var list = [];
+                fileList.forEach((item)=>{
+                    list.push(item.response.data)
+                });
+                this.formData.productImgList = list;
                 this.$message({
                     message: '删除成功',
                     type: 'success',
