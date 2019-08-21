@@ -30,7 +30,7 @@ const removeAllSessionStorage = ()=>{
     sessionStorage.clear();
 };
 
-export {
+module.exports = {
     setLocalStorage,
     getLocalStorage,
     removeLocalStorage,
@@ -39,4 +39,4 @@ export {
     getSessionStorage,
     removeSessionStorage,
     removeAllSessionStorage
-}
+};
