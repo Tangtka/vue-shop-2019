@@ -5,11 +5,15 @@
                 <i class="el-icon-setting"></i>
                 <span slot="title">系统设置</span>
             </el-menu-item>
-            <el-menu-item index="/product">
-                <i class="el-icon-goods"></i>
-                <span slot="title">产品设置</span>
-            </el-menu-item>
-            <el-submenu index="">
+            <el-submenu index="/product">
+                <template slot="title">
+                    <i class="el-icon-goods"></i>
+                    <span slot="title">产品设置</span>
+                </template>
+                <el-menu-item index="/product">产品列表</el-menu-item>
+                <el-menu-item index="/productAdd">添加产品</el-menu-item>
+            </el-submenu>
+            <el-submenu index="/admin">
                 <template slot="title">
                     <i class="el-icon-user"></i>
                     <span slot="title">用户管理</span>
@@ -47,7 +51,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
     .el-menu{
         height: 100%;
         overflow: hidden;
@@ -60,5 +64,9 @@ export default {
     }
     .el-submenu{
         padding-right: 20px;
+    }
+    .el-menu-item.is-active {
+        color: #409EFF;
+        background-color: #ecf5ff;
     }
 </style>

@@ -44,6 +44,12 @@ const router = new Router({
                     name: 'Product',
                     component: () => import('./../views/product/Product.vue'),
                 },
+                //添加产品
+                {
+                    path: '/productAdd',
+                    name: 'ProductAdd',
+                    component: () => import('./../views/product/ProductAdd.vue'),
+                },
                 //用户管理
                 {
                     path: '/users',

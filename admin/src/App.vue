@@ -15,6 +15,7 @@ export default {
 </script>
 
 <style src="./assets/css/reset.css"></style>
+<style src="./assets/css/style.css"></style>
 <style scoped>
   #app{
     height: 100%;

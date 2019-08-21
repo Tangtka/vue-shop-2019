@@ -27,14 +27,18 @@
                             label="权限"
                             width="180">
                         <template slot-scope="scope">
-                            <el-tag size="small" :type="scope.row.authorityAll === '3' ? 'info':''">{{ scope.row.authorityAll === '3' ? '普通用户':'' }}</el-tag>
+                            <el-tag size="small" :type="scope.row.authorityAll === '3' ? 'info':''">{{
+                                scope.row.authorityAll === '3' ? '普通用户':'' }}
+                            </el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="success" plain @click="lookUser(scope.row.userId,'look')">查看</el-button>
-                            <el-button size="mini" type="primary" plain @click="lookUser(scope.row.userId,'edit')">编辑</el-button>
-                            <el-button size="mini" type="danger" plain @click="delUser(scope.row.userId)">删除</el-button>
+                            <el-button size="mini" type="success" circle icon="el-icon-date" @click="lookUser(scope.row.userId,'look')">
+                            </el-button>
+                            <el-button size="mini" type="primary" circle icon="el-icon-edit" @click="lookUser(scope.row.userId,'edit')">
+                            </el-button>
+                            <el-button size="mini" type="danger" circle icon="el-icon-delete" @click="delAdmin(scope.row.userId)"></el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -76,10 +80,10 @@
         <Dialog :isShow="isDialogShow" title="用户信息" @close="closeDialogLook">
             <el-form :model="userDetail" label-width="100px">
                 <el-form-item label="用户编号">
-                    <el-input  v-model="userDetail.userId" disabled></el-input>
+                    <el-input v-model="userDetail.userId" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="用户类型">
-                    <el-input  v-model="userDetail.authorityAll === '3' ? '普通用户':''" disabled></el-input>
+                    <el-input v-model="userDetail.authorityAll === '3' ? '普通用户':''" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="用户名称">
                     <el-input v-model="userDetail.userName" disabled></el-input>
@@ -96,7 +100,7 @@
         <Dialog :isShow="isDialogShowEdit" title="用户修改" @close="closeDialogEdit">
             <el-form :model="userDetail" label-width="100px">
                 <el-form-item label="用户编号">
-                    <el-input  v-model="userDetail.userId" disabled></el-input>
+                    <el-input v-model="userDetail.userId" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="用户类型">
                     <el-select v-model="userDetail.authorityAll" clearable placeholder="请选择">
@@ -109,10 +113,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="用户名称">
-                    <el-input clearable v-model="userDetail.userName" ></el-input>
+                    <el-input clearable v-model="userDetail.userName"></el-input>
                 </el-form-item>
                 <el-form-item label="用户密码">
-                    <el-input show-password v-model="userDetail.userPwd" ></el-input>
+                    <el-input show-password v-model="userDetail.userPwd"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="btn" class="dialog-footer">
@@ -148,14 +152,14 @@
                     value: '',
                     btnLoading: false
                 },
-                userType:[
+                userType: [
                     {
                         value: '3',
                         label: '普通用户'
                     }],
                 isDialogShow: false,
-                userDetail:{},
-                isDialogShowEdit:false
+                userDetail: {},
+                isDialogShowEdit: false
             }
         },
         mounted() {
@@ -192,7 +196,7 @@
             },
             addUser() {
                 this.addForm.btnLoading = true;
-                if(!this.addForm.value){
+                if (!this.addForm.value) {
                     this.$message({
                         message: '用户类型不能为空',
                         type: 'error',
@@ -201,7 +205,7 @@
                     this.addForm.btnLoading = false;
                     return
                 }
-                if(!this.addForm.name){
+                if (!this.addForm.name) {
                     this.$message({
                         message: '用户名称不能为空',
                         type: 'error',
@@ -210,7 +214,7 @@
                     this.addForm.btnLoading = false;
                     return
                 }
-                if(!this.addForm.pwd){
+                if (!this.addForm.pwd) {
                     this.$message({
                         message: '用户密码不能为空',
                         type: 'error',
@@ -231,7 +235,7 @@
                             duration: 2000
                         });
                         this.resetUser();
-                        this.activeName =  'userList';
+                        this.activeName = 'userList';
                         this.seacrhUser();
                     } else {
                         this.$message({
@@ -243,13 +247,13 @@
                     this.addForm.btnLoading = false;
                 })
             },
-            resetUser(){
+            resetUser() {
                 this.addForm.name = '';
                 this.addForm.value = '';
                 this.addForm.pwd = '';
                 this.addForm.btnLoading = false;
             },
-            lookUser(userId,type) {
+            lookUser(userId, type) {
                 switch (type) {
                     case 'look':
                         this.openDialogLook();
@@ -272,8 +276,8 @@
                     }
                 })
             },
-            editUser(userId){
-                if(!this.userDetail.authorityAll){
+            editUser(userId) {
+                if (!this.userDetail.authorityAll) {
                     this.$message({
                         message: '用户类型不能为空',
                         type: 'error',
@@ -282,7 +286,7 @@
                     this.addForm.btnLoading = false;
                     return
                 }
-                if(!this.userDetail.userName){
+                if (!this.userDetail.userName) {
                     this.$message({
                         message: '用户名称不能为空',
                         type: 'error',
@@ -291,7 +295,7 @@
                     this.addForm.btnLoading = false;
                     return
                 }
-                if(!this.userDetail.userPwd){
+                if (!this.userDetail.userPwd) {
                     this.$message({
                         message: '用户密码不能为空',
                         type: 'error',
@@ -301,7 +305,7 @@
                     return
                 }
                 this.$$http.POST('/api/users/editUsers', {
-                    userId:userId,
+                    userId: userId,
                     userType: this.userDetail.authorityAll,
                     userName: this.userDetail.userName,
                     userPwd: this.userDetail.userPwd,
@@ -324,14 +328,14 @@
                     this.addForm.btnLoading = false;
                 })
             },
-            delUser(userId){
+            delUser(userId) {
                 this.$confirm('是否删除该用户', '提示', {
                     confirmButtonText: '删除',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     this.$$http.POST('/api/users/delUsers', {
-                        userId:userId,
+                        userId: userId,
                     }, (respData) => {
                         if (respData.status === '1') {
                             this.$message({
