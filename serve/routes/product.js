@@ -50,7 +50,7 @@ router.get('/', function (req, res, next) {
 
 //详情
 router.get('/detail', function (req, res, next) {
-    var productId = req.param("searchText");
+    var productId = req.param("productId");
 
     Product.findOne({
         productId: productId
@@ -99,7 +99,7 @@ router.post('/add', function (req, res, next) {
             res.json({
                 status: '1',
                 msg: '添加成功',
-                data: data
+                data: {}
             })
         }
     });

@@ -11,7 +11,7 @@ var productSchema = new mongoose.Schema({
     "productImgList" : String,
     "merchantId":String,
     "merchantName":String,
-    "creationTime":Date,
+    "creationTime":String,
     "isNews":Boolean,
     "isHot":Boolean
 

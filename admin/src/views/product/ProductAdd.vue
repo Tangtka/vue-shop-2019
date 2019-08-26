@@ -129,9 +129,22 @@
         },
         methods: {
             submitForm() {
-                this.$$http.POST('/api/product/add', this.formData, (respData) => {
+                this.formData.productImgList.toString();
+                this.$$http.POST('/api/product/add', {
+                    productName: this.formData.productName,
+                    productBrief: this.formData.productBrief,
+                    productDescribe: this.formData.productDescribe,
+                    productType: this.formData.productType,
+                    productPrice: this.formData.productPrice,
+                    productImg: this.formData.productImg,
+                    productImgList: JSON.stringify(this.formData.productImgList),
+                    merchantId: this.formData.merchantId,
+                    merchantName: this.formData.merchantName,
+                    creationTime: this.formData.creationTime,
+                    isNews: this.formData.isNews,
+                    isHot: this.formData.isHot
+                }, (respData) => {
                     if (respData.status === '1') {
-                        console.log(respData);
                         this.$message({
                             message: respData.msg,
                             type: 'success',
@@ -150,7 +163,7 @@
                             creationTime: '',
                             isNews: false,
                             isHot: false
-                        }
+                        };
                         this.productImg.fileList= [];
                         this.productImgList.fileList= [];
                     } else {
@@ -160,7 +173,6 @@
                             duration: 2000
                         });
                     }
-                    this.addForm.btnLoading = false;
                 })
             },
 

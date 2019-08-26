@@ -14,47 +14,59 @@
                 :data="dataList"
                 v-loading="tableLoading"
                 style="width: 100%"
-                row-key="id"
+                row-key="productId"
                 :expand-row-keys="[expands]">
             <el-table-column type="expand" >
                 <template slot-scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
-                        <el-form-item label="商品名称">
-                            <span>{{ props.row.name }}</span>
-                        </el-form-item>
-                        <el-form-item label="所属店铺">
-                            <span>{{ props.row.shop }}</span>
-                        </el-form-item>
                         <el-form-item label="商品 ID">
-                            <span>{{ props.row.id }}</span>
+                            <span>{{ props.row.productId}}</span>
                         </el-form-item>
-                        <el-form-item label="店铺 ID">
-                            <span>{{ props.row.shopId }}</span>
+                        <el-form-item label="商品名称">
+                            <span>{{ props.row.productName}}</span>
                         </el-form-item>
                         <el-form-item label="商品分类">
-                            <span>{{ props.row.category }}</span>
-                        </el-form-item>
-                        <el-form-item label="店铺地址">
-                            <span>{{ props.row.address }}</span>
+                            <span v-show="props.row.productType === '1'">电器</span>
+                            <span v-show="props.row.productType === '2'">书籍</span>
+                            <span v-show="props.row.productType === '3'">服装</span>
                         </el-form-item>
                         <el-form-item label="商品描述">
-                            <span>{{ props.row.desc }}</span>
+                            <span>{{ props.row.productDescribe }}</span>
+                        </el-form-item>
+                        <el-form-item label="价格">
+                            <span>{{ props.row.productPrice }}</span>
+                        </el-form-item>
+                        <el-form-item label="封面图">
+                            <el-image
+                                    style="width: 100px; height: 100px"
+                                    :src="baseImgUrl+props.row.productImg"
+                                    fit="fit"
+                                    :preview-src-list="[baseImgUrl+props.row.productImg]"
+                            ></el-image>
+                        </el-form-item>
+                        <el-form-item label="详细图">
+                            <el-image v-for="item in props.row.productImgList"
+                                    style="width: 100px; height: 100px;margin-right: 20px"
+                                    :src="baseImgUrl+item"
+                                    fit="fit"
+                                    :preview-src-list="[baseImgUrl+item]"
+                            ></el-image>
                         </el-form-item>
                     </el-form>
                 </template>
             </el-table-column>
             <el-table-column
-                    width="150"
+                    width="160"
                     label="商品 ID"
-                    prop="id">
+                    prop="productId">
             </el-table-column>
             <el-table-column
                     label="商品名称"
-                    prop="name">
+                    prop="productName">
             </el-table-column>
             <el-table-column
                     label="描述"
-                    prop="desc">
+                    prop="productDescribe">
             </el-table-column>
             <el-table-column
                     label="操作">
@@ -92,6 +104,7 @@
 </template>
 
 <script>
+    import {baseImgUrl} from './../../assets/js/config.js'
 export default {
     name: "Product",
     components:{
@@ -99,27 +112,11 @@ export default {
     },
     data(){
         return {
+            baseImgUrl:baseImgUrl,
             searchForm:{
                 text:''
             },
-            dataList:[{
-                id: '12987122',
-                name: '好滋好味鸡蛋仔',
-                category: '江浙小吃、小吃零食',
-                desc: '荷兰优质淡奶，奶香浓而不腻',
-                address: '上海市普陀区真北路',
-                shop: '王小虎夫妻店',
-                shopId: '10333'
-            },
-                {
-                    id: '12987123',
-                    name: '好滋好味鸡蛋仔',
-                    category: '江浙小吃、小吃零食',
-                    desc: '荷兰优质淡奶，奶香浓而不腻',
-                    address: '上海市普陀区真北路',
-                    shop: '王小虎夫妻店',
-                    shopId: '10333'
-                }],
+            dataList:[],
             page:{
                 num:1,
                 size:10,
@@ -130,20 +127,43 @@ export default {
         }
     },
     mounted() {
-    
+        this.getProductList();
     },
     methods:{
         submitSeacrh(){
-
+            this.page.num = 1;
+            this.getProductList();
         },
         getProductList(){
-            this.tableLoading = true
+            this.tableLoading = true;
+            this.$$http.GET('/api/product', {
+                searchText: this.searchForm.text,
+                pageNum: this.page.num,
+                pageSize: this.page.size,
+            }, (respData) => {
+                if (respData.status === '1') {
+                    this.dataList = respData.data;
+                    this.dataList.forEach((item)=>{
+                        item.productImgList = JSON.parse(item.productImgList)
+                    });
+
+                    this.page.totalCount = respData.totalCount;
+                } else {
+                    this.$message({
+                        message: respData.msg,
+                        type: 'error',
+                        duration: 2000
+                    });
+                }
+                this.tableLoading = false;
+            })
         },
         lookProduct(value){
-            if(this.expands && this.expands == value.id){
+            console.log(value);
+            if(this.expands && this.expands == value.productId){
                 this.expands = ''
             }else{
-                this.expands =value.id
+                this.expands =value.productId
             }
         },
         handleCurrentChange(e) {
