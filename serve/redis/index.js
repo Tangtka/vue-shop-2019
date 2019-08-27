@@ -18,13 +18,13 @@ client.on('ready', function (err) {
 
 //添缓存
 const addKey = (key, value, callback) => {
-    client.set('USERId_SHOP_ADMIN_'+key, value, callback);
-    client.expire('USERId_SHOP_ADMIN_'+key, Expiration_Time);
+    client.set(key, value, callback);
+    client.expire(key, Expiration_Time);
 };
 
 //存在则刷新
 const findKey = (key, callback) => {
-    client.get('USERId_SHOP_ADMIN_'+key, (err, res) => {
+    client.get(key, (err, res) => {
         if (res !== null) {
             addKey(key, res, callback);
         } else {

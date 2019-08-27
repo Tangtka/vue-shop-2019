@@ -29,57 +29,15 @@ const router = new Router({
         {
             path: '/index',
             name: 'Index',
-            redirect:'/system',
-            component: () => import('./../views/index/Index.vue'),
-            children:[
-                //系统设置
-                {
-                    path: '/system',
-                    name: 'System',
-                    component: () => import('./../views/system/System.vue'),
-                },
-                //产品设置
-                {
-                    path: '/product',
-                    name: 'Product',
-                    component: () => import('./../views/product/Product.vue'),
-                },
-                //添加产品
-                {
-                    path: '/productAdd',
-                    name: 'ProductAdd',
-                    component: () => import('./../views/product/ProductAdd.vue'),
-                },
-                //用户管理
-                {
-                    path: '/users',
-                    name: 'Users',
-                    component: () => import('./../views/users/Users.vue'),
-                },
-                //管理员管理
-                {
-                    path: '/admin',
-                    name: 'Admin',
-                    component: () => import('./../views/users/Admin.vue'),
-                },
-            ],
-        },
-        //登录页
-        {
-            path: '/login',
-            name: 'Login',
-            component: () => import('./../views/login/Login.vue'),
-        },
-
-
-
-
+            redirect: '/system',
+            component: () => import('./../views/index/Index.vue')
+        }
 
     ]
 });
 
 // 判断是否需要登录权限以及是否登录
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
     let userInfo = getLocalStorage('userInfo');
     if(to.name === 'Login'){
         next()
@@ -103,7 +61,7 @@ router.beforeEach((to, from, next) => {
         })
     };
 
-});
+});*/
 
 
 export default router;

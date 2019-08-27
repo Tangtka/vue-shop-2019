@@ -6,10 +6,6 @@ var logger = require('morgan');
 require('./mongooseConfig.js');
 
 var indexRouter = require('./routes/index');
-var adminUsersRouter = require('./routes/adminUsers');
-var usersRouter = require('./routes/Users');
-var systemSettingsRouter = require('./routes/systemSettings');
-var productRouter = require('./routes/product');
 
 var app = express();
 
@@ -35,10 +31,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api/adminUsers', adminUsersRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/systemSettings', systemSettingsRouter);
-app.use('/api/product', productRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

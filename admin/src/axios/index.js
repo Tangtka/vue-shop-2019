@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import qs from 'qs';
-import {baseUrl} from './../assets/js/config.js'
+import {baseUrl} from '../config/index.js'
 
 const axios = Axios.create({
     baseURL: baseUrl,
@@ -96,7 +96,7 @@ const requestError = (error) => {
 };
 
 export default {
-    GET : get,
-    POST : post,
-    uploadFile : uploadFile
-}
+    get,
+    post,
+    uploadFile
+};
