@@ -1,1 +1,21 @@
 @charset "UTF-8";
+html,body{
+    background-color: #efefef;
+    color: #333333;
+}
+.app{
+    height: 100%;
+}
+.el-menu{
+    border-right: none !important;
+}
+.el-menu-item {
+    border-left: solid 3px transparent;
+}
+.el-menu-item.is-active {
+    color: #ffffff;
+    border-left: solid 3px #00B7FF ;
+    background-color: #ecf5ff;
+}
+
+

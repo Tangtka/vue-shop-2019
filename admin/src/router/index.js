@@ -29,8 +29,13 @@ const router = new Router({
         {
             path: '/index',
             name: 'Index',
-            redirect: '/system',
             component: () => import('./../views/index/Index.vue')
+        },
+        //登录页
+        {
+            path: '/login',
+            name: 'Login',
+            component: () => import('./../views/login/Login.vue')
         }
 
     ]
