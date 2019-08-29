@@ -1,6 +1,6 @@
 <template>
     <div id="System">
-        <el-form label-width="100px" >
+        <el-form label-width="100px">
             <el-form-item label="网站名称">
                 <el-input></el-input>
             </el-form-item>
@@ -15,15 +15,16 @@
             </el-form-item>
             <el-form-item label="网站ICON">
                 <el-upload
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :action="fileUploadUrl"
                         list-type="picture-card"
-                        :on-preview="handlePictureCardPreview"
-                        :on-remove="handleRemove">
+                        :on-success="handleSuccess"
+                        :on-remove="handleRemove"
+                        :file-list="uploadImgList"
+                        :on-exceed="handleExceed"
+                        :limit="limit"
+                >
                     <i class="el-icon-plus"></i>
                 </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
             </el-form-item>
             <el-form-item label="版权信息">
                 <el-input></el-input>
@@ -47,31 +48,50 @@
 </template>
 
 <script>
-export default {
-    name: "System",
-    components:{
-    
-    },
-    data(){
-        return {
-            dialogImageUrl: '',
-            dialogVisible: false
-        }
-    },
-    mounted() {
-    
-    },
-    methods:{
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
+    import {fileUploadUrl,baseImgUrl} from './../../config/index.js'
+
+    export default {
+        name: "System",
+        components: {},
+        data() {
+            return {
+                fileUploadUrl: fileUploadUrl,
+                baseImgUrl:baseImgUrl,
+                dialogVisible: false,
+                limit:1,
+                uploadImgList:[],
+            }
         },
-        handlePictureCardPreview(file) {
-            this.dialogImageUrl = file.url;
-            this.dialogVisible = true;
+        mounted() {
+
+        },
+        methods: {
+            handleRemove(file, fileList) {
+                this.uploadImgList = [];
+                this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                });
+            },
+            handleSuccess(response, file, fileList) {
+                this.uploadImgList.push({
+                  name:'icon',
+                  url:this.baseImgUrl + response.data
+                });
+                this.$message({
+                    message: '上传成功',
+                    type: 'success'
+                });
+            },
+            handleExceed(files, fileList){
+                this.$message({
+                    message: '已存在一张图片',
+                    type: 'error'
+                });
+            },
         }
+
     }
-    
-}
 </script>
 
 <style scoped>
