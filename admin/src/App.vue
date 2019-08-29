@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="app">
-    <router-view></router-view>
+    <Index></Index>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 export default {
   name: 'app',
   components: {
-
+    'Index':()=>import('./views/index/Index.vue')
   }
 }
 </script>

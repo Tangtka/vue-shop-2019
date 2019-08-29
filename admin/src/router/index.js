@@ -23,7 +23,7 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/index'
+            redirect: '/system'
         },
         //首页
         {
@@ -36,6 +36,18 @@ const router = new Router({
             path: '/login',
             name: 'Login',
             component: () => import('./../views/login/Login.vue')
+        },
+        //系统设置 》 网站设置
+        {
+            path: '/system',
+            name: 'System',
+            component: () => import('./../views/systemSettings/System.vue')
+        },
+        //系统设置 》 字典
+        {
+            path: '/dictionaries',
+            name: 'Dictionaries',
+            component: () => import('./../views/systemSettings/Dictionaries.vue')
         }
 
     ]

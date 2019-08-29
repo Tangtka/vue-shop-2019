@@ -5,13 +5,19 @@
                 <span @click="isCollapse = !isCollapse">tka</span>
                 <span>后台管理系统</span>
             </div>
-            <div>2</div>
+            <div>
+                <UserInfo></UserInfo>
+            </div>
         </div>
-        <div class="main">
-            <div class="nav" :class="{'maxwidth':isCollapse}">
+        <div>
+            <div class="nav" :class="{'max-width':isCollapse}">
                 <Nav :isCollapse="isCollapse"></Nav>
             </div>
-            <div class="el-main">2</div>
+            <div>
+                <router-view class="router-box" :class="{'min-left':isCollapse}">
+
+                </router-view>
+            </div>
         </div>
     </div>
 </template>
@@ -21,11 +27,12 @@
     export default {
         name: "Index",
         components: {
-            'Nav':()=>import('./../../components/Nav.vue')
+            'Nav': () => import('./../../components/Nav.vue'),
+            'UserInfo': () => import('./../../components/UserInfo.vue')
         },
         data() {
             return {
-                isCollapse:false
+                isCollapse: false
             }
         },
         mounted() {
@@ -37,43 +44,63 @@
 </script>
 
 <style scoped>
-    .index{
+    .index {
         height: 100%;
     }
-    .header{
+
+    .header {
         width: 100%;
         height: 60px;
-        background-color: #34352C;
         color: #FFFFFF;
         padding: 0 15px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
     }
-    .header .logo{
+
+    .header .logo {
         font-size: 24px;
+        flex: 1;
+        display: flex;
+        align-items: center;
     }
-    .header .logo>span{
+
+    .header .logo > span {
+        cursor:pointer;
         margin: 0 10px;
     }
-    .main{
-        display: flex;
+
+    .nav{
+        position: fixed;
+        left: 0;
+        top: 60px;
         height: calc(100% - 60px);
         overflow: hidden;
         overflow-y: auto;
+        background-color: #fff;
+        transition: 0.3s;
+        width: 200px;
     }
-    .main .nav{
-        width: 230px;
-        height: 100%;
-        overflow: hidden;
-        overflow-y: auto;
-        background-color: #ffffff;
-    }
-    .main .nav.maxwidth{
+    .nav.max-width {
         width: 60px;
     }
-    .main .nav::-webkit-scrollbar{
+    .nav::-webkit-scrollbar {
         display: none;
     }
 
+    .router-box {
+        background-color: #ffffff;
+        padding: 15px;
+        box-shadow: 0 0 10px 0 #dddddd;
+        border-radius: 3px;
+        margin: 80px 20px 20px 220px;
+        transition: 0.3s;
+    }
+    .router-box.min-left{
+        margin-left: 80px;
+    }
 </style>

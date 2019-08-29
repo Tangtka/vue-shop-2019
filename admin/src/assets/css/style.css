@@ -6,6 +6,9 @@ html,body{
 .app{
     height: 100%;
 }
+.header {
+    background-color: #333366
+}
 .el-menu{
     border-right: none !important;
 }
@@ -14,8 +17,8 @@ html,body{
 }
 .el-menu-item.is-active {
     color: #ffffff;
-    border-left: solid 3px #00B7FF ;
-    background-color: #ecf5ff;
+    border-left: solid 3px #333366 ;
+    background-color: #33336615;
 }
 
 
