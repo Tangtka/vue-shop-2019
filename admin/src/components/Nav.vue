@@ -8,7 +8,7 @@
             :default-active="routerActive"
             router
         >
-            <el-submenu index="">
+            <el-submenu index="1">
                 <template slot="title">
                     <i class="el-icon-setting"></i>
                     <span slot="title">系统设置</span>
@@ -20,17 +20,17 @@
                 <i class="el-icon-shopping-bag-1"></i>
                 <span slot="title">产品管理</span>
             </el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item index="/advertising">
                 <i class="el-icon-picture-outline"></i>
                 <span slot="title">广告管理</span>
             </el-menu-item>
-            <el-submenu index="4">
+            <el-submenu index="3">
                 <template slot="title">
                     <i class="el-icon-user"></i>
                     <span slot="title">账号管理</span>
                 </template>
-                <el-menu-item index="4-1">管理员</el-menu-item>
-                <el-menu-item index="4-2">用户</el-menu-item>
+                <el-menu-item index="/admin">管理员</el-menu-item>
+                <el-menu-item index="/users">用户</el-menu-item>
             </el-submenu>
             <el-menu-item index="5">
                 <i class="el-icon-edit"></i>

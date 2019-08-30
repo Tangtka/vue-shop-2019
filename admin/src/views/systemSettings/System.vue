@@ -57,7 +57,6 @@
             return {
                 fileUploadUrl: fileUploadUrl,
                 baseImgUrl:baseImgUrl,
-                dialogVisible: false,
                 limit:1,
                 uploadImgList:[],
             }

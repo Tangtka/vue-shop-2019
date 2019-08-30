@@ -5,13 +5,15 @@
                     :data="data"
                     :props="defaultProps"
                     node-key="id"
-                    default-expanded-keys="0"
+                    :default-expanded-keys="['0']"
                     accordion
                     @node-click="handleNodeClick">
             </el-tree>
         </div>
         <div style="flex: 1;margin-left: 10px;">
-            <el-button type="primary" @click="dialogVisible = true">添加</el-button>
+            <div>
+                <el-button type="primary" @click="dialogVisible = true">添加</el-button>
+            </div>
             <el-table
                     :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 100%">

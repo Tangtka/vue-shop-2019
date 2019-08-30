@@ -14,9 +14,13 @@
                 <Nav :isCollapse="isCollapse"></Nav>
             </div>
             <div>
-                <router-view class="router-box" :class="{'min-left':isCollapse}">
+                <transition
+                    enter-active-class="animated fadeInDown"
+                    leave-active-class="animated fadeOutRight"
+                >
+                    <router-view class="router-box" :class="{'min-left':isCollapse}"></router-view>
+                </transition>
 
-                </router-view>
             </div>
         </div>
     </div>

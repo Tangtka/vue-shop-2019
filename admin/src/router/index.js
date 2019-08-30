@@ -48,6 +48,25 @@ const router = new Router({
             path: '/dictionaries',
             name: 'Dictionaries',
             component: () => import('./../views/systemSettings/Dictionaries.vue')
+        },
+        //广告
+        {
+            path: '/advertising',
+            name: 'Advertising',
+            component: () => import('./../views/advertising/Advertising.vue')
+        },
+        //广告
+        {
+            path: '/users',
+            name: 'Users',
+            component: () => import('./../views/users/Users.vue')
+        }
+        ,
+        //广告
+        {
+            path: '/admin',
+            name: 'Admin',
+            component: () => import('./../views/users/Admin.vue')
         }
 
     ]
