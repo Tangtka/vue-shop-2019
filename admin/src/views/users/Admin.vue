@@ -10,7 +10,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button :loading="loading" icon="el-icon-search" type="primary">查找</el-button>
-                <el-button icon="el-icon-edit" type="primary">添加</el-button>
+                <el-button icon="el-icon-edit" type="primary" @click="addUser">添加</el-button>
             </el-form-item>
         </el-form>
 
@@ -37,7 +37,7 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini">编辑</el-button>
+                    <el-button size="mini" @click="editUser">编辑</el-button>
                     <el-button size="mini" type="danger">删除</el-button>
                 </template>
             </el-table-column>
@@ -48,47 +48,61 @@
 </template>
 
 <script>
-export default {
-    name: "Admin",
-    components:{
-        'Pagination':()=>import('./../../components/Pagination.vue')
-    },
-    data(){
-        return {
-            dataList:[
-                {
-                    userId:'userId',
-                    userName:'userName',
-                    authorityId:'authorityId',
-                    authorityName:'authorityName'
-                }
-            ],
-            loading:false,
-            page:{
-                num:1,
-                size:10,
+    export default {
+        name: "Admin",
+        components: {
+            'Pagination': () => import('./../../components/Pagination.vue')
+        },
+        data() {
+            return {
+                dataList: [
+                    {
+                        userId: 'userId',
+                        userName: 'userName',
+                        authorityId: 'authorityId',
+                        authorityName: 'authorityName'
+                    }
+                ],
+                loading: false,
+                page: {
+                    num: 1,
+                    size: 10,
+                },
+                total: 100
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            setPageSize(val) {
+                this.page.size = val;
+                console.log(val)
             },
-            total:100
+            getData(val) {
+                this.loading = true;
+                setTimeout(() => {
+                    this.loading = false;
+                }, 1000);
+                console.log(val)
+            },
+            addUser() {
+                this.$router.push({
+                    path: '/addUser', query: {
+                        type: 'admin'
+                    }
+                })
+            },
+            editUser() {
+                this.$router.push({
+                    path: '/editUser', query: {
+                        type: 'admin'
+                    }
+                })
+            }
         }
-    },
-    mounted() {
-    
-    },
-    methods:{
-        setPageSize(val){
-            this.page.size = val;
-            console.log(val)
-        },
-        getData(val){
-            this.loading = true;
-            setTimeout(()=>{
-                this.loading = false;
-            },1000)
-            console.log(val)
-        },
+
     }
-    
-}
 </script>
 
 <style scoped>

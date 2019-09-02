@@ -32,7 +32,7 @@
                 <el-menu-item index="/admin">管理员</el-menu-item>
                 <el-menu-item index="/users">用户</el-menu-item>
             </el-submenu>
-            <el-menu-item index="5">
+            <el-menu-item index="/logs">
                 <i class="el-icon-edit"></i>
                 <span slot="title">操作日志</span>
             </el-menu-item>

@@ -1,5 +1,5 @@
 <template>
-    <div id="AddUser">
+    <div id="EditUser">
         <el-page-header @back="goBack" :content="content"></el-page-header>
         <div class="el-main">
             <el-form label-width="80px" >
@@ -31,7 +31,7 @@
 
 <script>
     export default {
-        name: "AddUser",
+        name: "EditUser",
         components: {},
         data() {
             return {
@@ -54,10 +54,10 @@
             this.type = this.$route.query.type;
             switch (this.type) {
                 case 'admin':
-                    this.content = '添加管理员';
+                    this.content = '编辑管理员信息';
                     break;
                 case 'user' :
-                    this.content = '添加用户';
+                    this.content = '编辑用户信息';
                     break;
             }
         },

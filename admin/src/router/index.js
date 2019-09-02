@@ -55,18 +55,35 @@ const router = new Router({
             name: 'Advertising',
             component: () => import('./../views/advertising/Advertising.vue')
         },
-        //广告
+        //用户
         {
             path: '/users',
             name: 'Users',
             component: () => import('./../views/users/Users.vue')
-        }
-        ,
-        //广告
+        },
+        //管理员
         {
             path: '/admin',
             name: 'Admin',
             component: () => import('./../views/users/Admin.vue')
+        },
+        //管理员add
+        {
+            path: '/addUser',
+            name: 'AddUser',
+            component: () => import('./../views/users/AddUser.vue')
+        },
+        //管理员edit
+        {
+            path: '/editUser',
+            name: 'EditUser',
+            component: () => import('./../views/users/EditUser.vue')
+        },
+        //操作记录
+        {
+            path: '/logs',
+            name: 'Logs',
+            component: () => import('./../views/logs/Logs.vue')
         }
 
     ]
