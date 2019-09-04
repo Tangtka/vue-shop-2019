@@ -1,5 +1,8 @@
 <template>
     <div id="Nav">
+
+
+
         <el-menu
             default-active="1-4-1"
             class="el-menu-vertical-demo"
@@ -16,11 +19,11 @@
                 <el-menu-item index="/dictionaries">字典管理</el-menu-item>
                 <el-menu-item index="/system">网站设置</el-menu-item>
             </el-submenu>
-            <el-menu-item index="2">
+            <el-menu-item index="/productList">
                 <i class="el-icon-shopping-bag-1"></i>
                 <span slot="title">产品管理</span>
             </el-menu-item>
-            <el-menu-item index="/advertising">
+            <el-menu-item index="/advertisingList">
                 <i class="el-icon-picture-outline"></i>
                 <span slot="title">广告管理</span>
             </el-menu-item>

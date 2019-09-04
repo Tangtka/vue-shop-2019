@@ -23,7 +23,7 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/system'
+            redirect: '/editProduct/type=add'
         },
         //首页
         {
@@ -51,9 +51,15 @@ const router = new Router({
         },
         //广告
         {
-            path: '/advertising',
-            name: 'Advertising',
-            component: () => import('./../views/advertising/Advertising.vue')
+            path: '/advertisingList',
+            name: 'AdvertisingList',
+            component: () => import('./../views/advertising/AdvertisingList.vue')
+        },
+        //广告add
+        {
+            path: '/editAdvertising',
+            name: 'EditAdvertising',
+            component: () => import('../views/advertising/EditAdvertising.vue')
         },
         //用户
         {
@@ -84,6 +90,18 @@ const router = new Router({
             path: '/logs',
             name: 'Logs',
             component: () => import('./../views/logs/Logs.vue')
+        },
+        //产品管理
+        {
+            path: '/productList',
+            name: 'ProductList',
+            component: () => import('./../views/product/ProductList.vue')
+        },
+        //产品管理add
+        {
+            path: '/editProduct',
+            name: 'EditProduct',
+            component: () => import('../views/product/EditProduct.vue')
         }
 
     ]

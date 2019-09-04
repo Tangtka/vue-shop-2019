@@ -12,7 +12,7 @@
         </div>
         <div style="flex: 1;margin-left: 10px;">
             <div>
-                <el-button type="primary" @click="dialogVisible = true">添加</el-button>
+                <!--<el-button type="primary" @click="dialogVisible = true">添加</el-button>-->
             </div>
             <el-table
                     :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
@@ -28,9 +28,10 @@
                 <el-table-column
                         align="right">
                     <template slot="header" slot-scope="scope">
-                        <el-input
+                        <!--<el-input
                                 v-model="search"
-                                placeholder="输入关键字搜索"/>
+                                placeholder="输入关键字搜索"/>-->
+                        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
                     </template>
                     <template slot-scope="scope">
                         <el-button
