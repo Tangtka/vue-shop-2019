@@ -15,8 +15,9 @@
             </div>
             <div>
                 <transition
-                    enter-active-class="animated fadeInDown"
-                    leave-active-class="animated fadeOutRight"
+                    :duration="{ enter: 1000, leave: 200 }"
+                    enter-active-class="animated bounceInDown"
+                    leave-active-class="animated bounceOutRight"
                 >
                     <router-view class="router-box" :class="{'min-left':isCollapse}"></router-view>
                 </transition>

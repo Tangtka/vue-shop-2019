@@ -23,7 +23,7 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/editProduct/type=add'
+            redirect: '/editProduct'
         },
         //首页
         {

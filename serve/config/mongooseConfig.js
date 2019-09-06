@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 
 //连接mongoDB 数据库
-mongoose.connect('mongodb://xxx.org.cn:27017/vue_shop');
+mongoose.connect('mongodb://pegasus.org.cn:27017/tka_shop');
 mongoose.connection.on('connected', function () {
-    console.log('连接成功...')
+    console.log('mongodb连接成功...')
 });
 mongoose.connection.on('error', function () {
-    console.log('连接失败...')
+    console.log('mongodb连接失败...')
 });
 mongoose.connection.on('disconnected', function () {
-    console.log('断开连接...')
+    console.log('mongodb断开连接...')
 });
