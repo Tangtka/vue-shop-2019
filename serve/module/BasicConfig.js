@@ -5,6 +5,8 @@ const BasicConfigSchema = new mongoose.Schema({
     websiteBrief:String, //简介
     websiteKeyword:String, //关键词
     websiteDescribe:String, //描述
+    websiteIcon:String, //网站icon
+    websiteLogo:String, //网站logo
     websiteCopyright:String, //版权信息
     InternetContentProvider:String, //备案号
     fileBrowsingAddress:String, //文件浏览地址

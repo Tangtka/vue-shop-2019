@@ -1,3 +1,5 @@
+const Log = require('./../module/Logs.js');
+
 /*
 * 返回随机数
 * 时间戳+5位随机数
@@ -5,6 +7,10 @@
 const getRandom = () => {
     return new Date().getTime() + Math.floor(Math.random() * 99999 + 10000);
 };
+
+/*
+* 处理时间
+* */
 const dateFormat = (fmt, date) => {
     let o = {
         "M+": date.getMonth() + 1,     //月份
@@ -23,7 +29,41 @@ const dateFormat = (fmt, date) => {
     return fmt;
 };
 
+/*
+* 添加操作记录
+* params @Object
+* */
+const addlog = (params) => {
+    let logParam = {
+        logId: 'log' + getRandom(),
+        createTime: dateFormat('yyyy-MM-dd hh:mm:ss', new Date()),
+        operationContent: params.operationContent,
+        userId: params.userId,
+        userName: params.userName,
+        browser: params.browser,
+        status: 1
+    };
+
+    //增加操作记录
+    Log.create(logParam, (err, log)=> {
+        if(err){
+            return {
+                status:0,
+                message:'添加操作记录失败',
+                result:''
+            }
+        }else{
+            return {
+                status:1,
+                message:'添加操作记录成功',
+                result:log
+            }
+        }
+    });
+};
+
 module.exports = {
     getRandom,
-    dateFormat
+    dateFormat,
+    addlog
 };

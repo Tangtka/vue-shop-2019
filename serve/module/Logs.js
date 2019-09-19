@@ -10,4 +10,4 @@ const LogSchema = new mongoose.Schema({
     status:Number, //状态
 });
 
-module.exports = mongoose.model('log',LogSchema);
+module.exports = mongoose.model('logs',LogSchema);
