@@ -1,4 +1,4 @@
-const Log = require('./../module/Logs.js');
+const Log = require('../models/Logs.js');
 
 /*
 * 返回随机数
@@ -44,22 +44,8 @@ const addlog = (params) => {
         status: 1
     };
 
-    //增加操作记录
-    Log.create(logParam, (err, log)=> {
-        if(err){
-            return {
-                status:0,
-                message:'添加操作记录失败',
-                result:''
-            }
-        }else{
-            return {
-                status:1,
-                message:'添加操作记录成功',
-                result:log
-            }
-        }
-    });
+
+
 };
 
 module.exports = {
