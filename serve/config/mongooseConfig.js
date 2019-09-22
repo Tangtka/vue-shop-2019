@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 //连接mongoDB 数据库
-mongoose.connect('mongodb://pegasus.org.cn:27017/tka_shop');
+mongoose.connect('mongodb://xxx.org.cn:27017/tka_shop');
 mongoose.connection.on('connected', function () {
     console.log('mongodb连接成功...')
 });
