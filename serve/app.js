@@ -8,6 +8,7 @@ require('./config/mongooseConfig.js');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var systemRouter = require('./routes/system');
+var logsRouter = require('./routes/logs');
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/system', systemRouter);
+app.use('/api/logs', logsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
