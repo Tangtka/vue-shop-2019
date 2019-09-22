@@ -11,6 +11,7 @@ const BasicConfigSchema = new mongoose.Schema({
     InternetContentProvider:String, //备案号
     fileBrowsingAddress:String, //文件浏览地址
     fileUploadAddress:String, //文件上传地址
+    status:Number //状态
 });
 
 module.exports = mongoose.model('basic_config',BasicConfigSchema);

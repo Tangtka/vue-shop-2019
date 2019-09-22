@@ -23,13 +23,12 @@ router.get('/dictionaries/list', function(req, res, next) {
                 message:err,
                 result:{}
             })
-        }else{
-            res.json({
-                status:1,
-                message:'查询成功',
-                result:dictionaries
-            })
         }
+        res.json({
+            status:1,
+            message:'查询成功',
+            result:dictionaries
+        })
     });
 
 });
@@ -54,37 +53,37 @@ router.post('/dictionaries/add', function(req, res, next) {
                 message:err,
                 result:{}
             })
-        }else{
-            if(dictionaries){
+        }
+
+        if(dictionaries){
+            res.json({
+                status:0,
+                message:'字段冲突',
+                result:{}
+            })
+        }
+
+        Dictionaries.create({
+            dictionaryId,
+            dictionaryCode,
+            dictionaryName,
+            parentId,
+            status:1
+        }, (addErr, addDictionaries)=> {
+            if(addErr){
                 res.json({
                     status:0,
-                    message:'字段冲突',
+                    message:'添加失败',
                     result:{}
                 })
             }else{
-                Dictionaries.create({
-                    dictionaryId,
-                    dictionaryCode,
-                    dictionaryName,
-                    parentId,
-                    status:1
-                }, (addErr, addDictionaries)=> {
-                    if(addErr){
-                        res.json({
-                            status:0,
-                            message:'添加失败',
-                            result:{}
-                        })
-                    }else{
-                        res.json({
-                            status:1,
-                            message:'添加成功',
-                            result:{}
-                        })
-                    }
-                });
+                res.json({
+                    status:1,
+                    message:'添加成功',
+                    result:{}
+                })
             }
-        }
+        });
     });
 
 });
@@ -102,6 +101,13 @@ router.post('/dictionaries/del', function(req, res, next) {
     },{
         status:0
     },(err,dictionaries)=>{
+        if(err){
+            res.json({
+                status:0,
+                message:err,
+                result:{}
+            })
+        }
         if(!dictionaries){
             res.json({
                 status:0,
@@ -138,6 +144,13 @@ router.post('/dictionaries/edit', function(req, res, next) {
         dictionaryName,
         status:1
     },(err,dictionaries)=>{
+        if(err){
+            res.json({
+                status:0,
+                message:err,
+                result:{}
+            })
+        }
         if(!dictionaries){
             res.json({
                 status:0,
@@ -156,6 +169,82 @@ router.post('/dictionaries/edit', function(req, res, next) {
 
 });
 
+/*
+* 查询网站设置
+* parentId
+* */
+router.get('/basicConfig', function(req, res, next) {
 
+    BasicConfig.findOne({
+        status:1
+    },{
+        _id:0
+    },(err,basicConfig)=>{
+        if(err){
+            res.json({
+                status:0,
+                message:err,
+                result:basicConfig
+            })
+        }
+
+        res.json({
+            status:1,
+            message:'查询成功',
+            result:basicConfig
+        })
+
+    });
+
+});
+
+/*
+* 修改网站设置
+* parentId
+* */
+router.post('/basicConfig/edit', function(req, res, next) {
+    let websiteName = req.body.websiteName || '',
+        websiteBrief = req.body.websiteBrief || '',
+        websiteKeyword = req.body.websiteKeyword || '',
+        websiteDescribe = req.body.websiteDescribe || '',
+        websiteIcon = req.body.dictiwebsiteIcononaryCode || '',
+        websiteLogo = req.body.websiteLogo || '',
+        websiteCopyright = req.body.websiteCopyright || '',
+        InternetContentProvider = req.body.InternetContentProvider || '',
+        fileBrowsingAddress = req.body.fileBrowsingAddress || '',
+        fileUploadAddress = req.body.fileUploadAddress || '';
+
+    BasicConfig.findOneAndUpdate({
+        status:1
+    },{
+        websiteName,
+        websiteBrief,
+        websiteKeyword,
+        websiteDescribe,
+        websiteIcon,
+        websiteLogo,
+        websiteCopyright,
+        InternetContentProvider,
+        fileBrowsingAddress,
+        fileUploadAddress,
+        status:1
+    },(err,basicConfig)=>{
+        if(err){
+            res.json({
+                status:0,
+                message:err,
+                result:{}
+            })
+        }
+
+        res.json({
+            status:1,
+            message:'添加/修改成功',
+            result:{}
+        })
+
+    });
+
+});
 
 module.exports = router;
