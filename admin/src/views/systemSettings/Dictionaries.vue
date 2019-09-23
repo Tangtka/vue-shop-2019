@@ -2,13 +2,13 @@
     <div id="Dictionaries" class="el-row--flex">
         <div style="min-width: 200px;">
             <el-tree
-                    :data="data"
-                    :props="defaultProps"
-                    node-key="id"
-                    :default-expanded-keys="['0']"
-                    accordion
-                    @node-click="handleNodeClick">
+                :props="treeProps"
+                :load="treeLoadNode"
+                @node-click="treeHandleNodeClick"
+                lazy
+            >
             </el-tree>
+
         </div>
         <div style="flex: 1;margin-left: 10px;">
             <div>
@@ -18,12 +18,12 @@
                     :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 100%">
                 <el-table-column
-                        label="Date"
-                        prop="date">
+                        label="属性值"
+                        prop="dictionaryCode">
                 </el-table-column>
                 <el-table-column
-                        label="Name"
-                        prop="name">
+                        label="名称"
+                        prop="dictionaryName">
                 </el-table-column>
                 <el-table-column
                         align="right">
@@ -78,29 +78,16 @@ export default {
     },
     data(){
         return {
-            data: [{
-                id: 0,
-                label: '一级 1',
-                children: [{
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [{
-                        id: 9,
-                        label: '三级 1-1-1'
-                    }, {
-                        id: 10,
-                        label: '三级 1-1-2'
-                    }]
-                }]
-            }],
-            defaultProps: {
-                children: 'children',
-                label: 'label'
+            treeProps: {
+                label: 'dictionaryName',
+                children: 'zones',
+                isLeaf: 'leaf'
             },
             tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
+                dictionaryId: '2016-05-02',
+                dictionaryCode: '王小虎',
+                dictionaryName: '123',
+                parentId:''
             }],
             search: '',
             dialogVisible:false
@@ -110,7 +97,13 @@ export default {
     
     },
     methods:{
-        handleNodeClick(data) {
+        treeLoadNode(node, resolve) {
+            if (node.level === 0) {
+                return resolve([{ dictionaryName: '全部',dictionaryCode:'',dictionaryId:'',parentId:'' }]);
+            }
+            this.getTreeData(node,resolve)
+        },
+        treeHandleNodeClick(data){
             console.log(data);
         },
         handleEdit(index, row) {
@@ -118,6 +111,13 @@ export default {
         },
         handleDelete(index, row) {
             console.log(index, row);
+        },
+        getTreeData(node, resolve){
+            this._api.post('/api/system/dictionaries/list',{
+                parentId:node.data ? node.data.dictionaryId : ''
+            },(res)=>{
+                resolve(res.result)
+            })
         }
     }
     
