@@ -176,9 +176,11 @@ router.post('/dictionaries/edit', function(req, res, next) {
 router.get('/basicConfig', function(req, res, next) {
 
     BasicConfig.findOne({
-        status:1
+        status:1,
+        typeCode:'SYSTEM_SET'
     },{
-        _id:0
+        _id:0,
+        __v:0
     },(err,basicConfig)=>{
         if(err){
             res.json({
@@ -207,7 +209,7 @@ router.post('/basicConfig/edit', function(req, res, next) {
         websiteBrief = req.body.websiteBrief || '',
         websiteKeyword = req.body.websiteKeyword || '',
         websiteDescribe = req.body.websiteDescribe || '',
-        websiteIcon = req.body.dictiwebsiteIcononaryCode || '',
+        websiteIcon = req.body.websiteIcon || '',
         websiteLogo = req.body.websiteLogo || '',
         websiteCopyright = req.body.websiteCopyright || '',
         InternetContentProvider = req.body.InternetContentProvider || '',
@@ -215,6 +217,7 @@ router.post('/basicConfig/edit', function(req, res, next) {
         fileUploadAddress = req.body.fileUploadAddress || '';
 
     BasicConfig.findOneAndUpdate({
+        typeCode:'SYSTEM_SET',
         status:1
     },{
         websiteName,
@@ -226,8 +229,7 @@ router.post('/basicConfig/edit', function(req, res, next) {
         websiteCopyright,
         InternetContentProvider,
         fileBrowsingAddress,
-        fileUploadAddress,
-        status:1
+        fileUploadAddress
     },(err,basicConfig)=>{
         if(err){
             res.json({
@@ -236,12 +238,41 @@ router.post('/basicConfig/edit', function(req, res, next) {
                 result:{}
             })
         }
-
-        res.json({
-            status:1,
-            message:'添加/修改成功',
-            result:{}
-        })
+        if(basicConfig){
+            res.json({
+                status:1,
+                message:'修改成功',
+                result:{}
+            })
+        }else{
+            BasicConfig.create({
+                websiteName,
+                websiteBrief,
+                websiteKeyword,
+                websiteDescribe,
+                websiteIcon,
+                websiteLogo,
+                websiteCopyright,
+                InternetContentProvider,
+                fileBrowsingAddress,
+                fileUploadAddress,
+                status:1,
+                typeCode:'SYSTEM_SET'
+            },(addErr,addBasicConfig)=>{
+                if(err){
+                    res.json({
+                        status:0,
+                        message:addErr,
+                        result:{}
+                    })
+                }
+                res.json({
+                    status:1,
+                    message:'添加成功',
+                    result:{}
+                })
+            })
+        }
 
     });
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const BasicConfigSchema = new mongoose.Schema({
+    typeCode:String, //类型
     websiteName:String, //名称
     websiteBrief:String, //简介
     websiteKeyword:String, //关键词

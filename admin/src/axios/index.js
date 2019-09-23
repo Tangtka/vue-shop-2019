@@ -21,7 +21,12 @@ const axios = Axios.create({
  */
 const get = (url, params, callback, err) => {
     axios.get(url, {params: params}).then((response) => {
-        callback(response.data);
+        if(response.data.status === 1){
+            callback(response.data);
+        }else{
+            console.log(response.data.message)
+        }
+
     }).catch((error) => {
         if (typeof (err) == "undefined") {
             requestError(error);
@@ -41,7 +46,11 @@ const get = (url, params, callback, err) => {
  */
 const post = (url, params, callback, err) => {
     axios.post(url, params).then((response) => {
-        callback(response.data);
+        if(response.data.status === 1){
+            callback(response.data);
+        }else{
+            console.log(response.data.message)
+        }
     }).catch((error) => {
         if (typeof (err) == "undefined") {
             requestError(error);
