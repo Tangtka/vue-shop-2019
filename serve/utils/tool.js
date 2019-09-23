@@ -11,7 +11,7 @@ const getRandom = () => {
 /*
 * 处理时间
 * */
-const dateFormat = (fmt, date) => {
+const dateFormat = (date,fmt) => {
     let o = {
         "M+": date.getMonth() + 1,     //月份
         "d+": date.getDate(),     //日
@@ -36,7 +36,7 @@ const dateFormat = (fmt, date) => {
 const addlog = (params) => {
     let logParam = {
         logId: 'log' + getRandom(),
-        createTime: dateFormat('yyyy-MM-dd hh:mm:ss', new Date()),
+        createTime: dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss'),
         operationContent: params.operationContent,
         userId: params.userId,
         userName: params.userName,
