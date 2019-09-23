@@ -8,8 +8,8 @@ const tool = require('../utils/tool.js');
 * 查询字典
 * parentId
 * */
-router.get('/dictionaries/list', function(req, res, next) {
-    let parentId = req.query.parentId || '';
+router.post('/dictionaries/list', function(req, res, next) {
+    let parentId = req.body.parentId || '';
 
     Dictionaries.find({
         parentId,
