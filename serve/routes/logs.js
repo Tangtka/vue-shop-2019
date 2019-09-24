@@ -9,6 +9,16 @@ router.post('/list', function(req, res, next) {
     let pageSize = parseInt(req.body.pageSize);
     let pageCount = 0;
 
+    let log = Logs.find({
+        status:1
+    },{
+        _id:0,
+        __v:0
+    });
+    log.sort({createTime:-1});
+    log.skip((pageNum-1)*pageSize);
+    log.limit(pageSize);
+
     Logs.count({
         status:1
     },(err,count)=>{
@@ -20,32 +30,21 @@ router.post('/list', function(req, res, next) {
             })
         }
         pageCount = count;
-    });
-
-    let log = Logs.find({
-        status:1
-    },{
-        _id:0,
-        __v:0
-    });
-    log.sort({createTime:-1});
-    log.skip((pageNum-1)*pageSize);
-    log.limit(pageSize);
-
-    log.exec((err,logs)=>{
-        if(err){
+        log.exec((err,logs)=>{
+            if(err){
+                res.json({
+                    status:0,
+                    message:err,
+                    result:{}
+                })
+            }
             res.json({
-                status:0,
-                message:err,
-                result:{}
+                status:1,
+                message:'查询成功',
+                pageCount:pageCount,
+                result:logs,
             })
-        }
-        res.json({
-            status:1,
-            message:'查询成功',
-            pageCount:pageCount,
-            result:logs,
-        })
+        });
     });
 });
 

@@ -2,19 +2,19 @@
     <div id="Logs">
         <el-table
                 style="width: 100%"
-                :data="dataList.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                :data="tableData.filter(data => !search || data.operationContent.toLowerCase().includes(search.toLowerCase()))"
                 v-loading="loading">
             <el-table-column
                     label="ip"
-                    prop="ip">
+                    prop="logId">
             </el-table-column>
             <el-table-column
                     label="时间"
-                    prop="time">
+                    prop="createTime">
             </el-table-column>
             <el-table-column
                     label="操作"
-                    prop="operation">
+                    prop="operationContent">
             </el-table-column>
             <el-table-column
                     align="right">
@@ -39,34 +39,18 @@
         },
         data() {
             return {
-                dataList: [{
-                    time: '2016-05-02',
-                    ip: '王小虎',
-                    operation: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    time: '2016-05-02',
-                    ip: '王小虎',
-                    operation: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    time: '2016-05-02',
-                    ip: '王小虎',
-                    operation: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    time: '2016-05-02',
-                    ip: '王小虎',
-                    operation: '上海市普陀区金沙江路 1518 弄'
-                }],
+                tableData: [],
                 search: '',
                 loading: false,
                 page: {
                     num: 1,
                     size: 10,
                 },
-                total: 100
+                total: 0
             }
         },
         mounted() {
-
+            this.getData();
         },
         methods: {
             setPageSize(val) {
@@ -74,10 +58,15 @@
             },
             getData(val) {
                 this.loading = true;
-                setTimeout(() => {
+                this._api.post('/api/logs/list',{
+                    pageNum:val,
+                    pageSize:this.page.size,
+                },(res)=>{
+                    console.log(res);
+                    this.total = res.pageCount;
+                    this.tableData = res.result;
                     this.loading = false;
-                }, 1000);
-                console.log(val)
+                })
             },
         },
     }
