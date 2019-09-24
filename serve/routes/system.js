@@ -139,10 +139,8 @@ router.post('/dictionaries/edit', function(req, res, next) {
         dictionaryId:dictionaryId,
         status:1
     },{
-        dictionaryId,
         dictionaryCode,
         dictionaryName,
-        status:1
     },(err,dictionaries)=>{
         if(err){
             res.json({

@@ -2,6 +2,7 @@
     <div id="Dictionaries" class="el-row--flex">
         <div style="min-width: 200px;">
             <el-tree
+                node-key="dictionaryId"
                 :props="treeProps"
                 :load="treeLoadNode"
                 @node-click="treeHandleNodeClick"
@@ -18,13 +19,14 @@
                     :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 100%">
                 <el-table-column
-                        label="属性值"
-                        prop="dictionaryCode">
-                </el-table-column>
-                <el-table-column
                         label="名称"
                         prop="dictionaryName">
                 </el-table-column>
+                <el-table-column
+                        label="属性值"
+                        prop="dictionaryCode">
+                </el-table-column>
+
                 <el-table-column
                         align="right">
                     <template slot="header" slot-scope="scope">
@@ -35,12 +37,16 @@
                     </template>
                     <template slot-scope="scope">
                         <el-button
-                                size="mini"
-                                @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+                            size="mini"
+                            @click="TreeHandleEdit(scope.$index, scope.row)"
+                            icon="el-icon-edit"
+                        ></el-button>
                         <el-button
-                                size="mini"
-                                type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                            size="mini"
+                            type="danger"
+                            @click="TreeHandleDelete(scope.$index, scope.row)"
+                            icon="el-icon-delete"
+                        ></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -50,23 +56,47 @@
                 title="添加分类"
                 :visible.sync="dialogVisible"
                 width="500px"
-                >
+        >
             <el-form label-position="top"  label-width="80px" >
-                <el-form-item label="ID">
-                    <el-input></el-input>
+                <el-form-item label="parentId">
+                    <el-input disabled v-model="isOnDictionaryId"></el-input>
                 </el-form-item>
                 <el-form-item label="属性值">
-                    <el-input></el-input>
+                    <el-input v-model="addForm.dictionaryCode"></el-input>
                 </el-form-item>
                 <el-form-item label="属性名称">
-                    <el-input></el-input>
+                    <el-input v-model="addForm.dictionaryName"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button @click="addClose">取 消</el-button>
+                <el-button type="primary" @click="add">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog
+                title="编辑分类"
+                :visible.sync="dialogVisibleEdit"
+                width="500px"
+        >
+            <el-form label-position="top"  label-width="80px" >
+                <el-form-item label="parentId">
+                    <el-input disabled v-model="editForm.parentId"></el-input>
+                </el-form-item>
+                <el-form-item label="属性值">
+                    <el-input v-model="editForm.dictionaryCode"></el-input>
+                </el-form-item>
+                <el-form-item label="属性名称">
+                    <el-input v-model="editForm.dictionaryName"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editClose">取 消</el-button>
+                <el-button type="primary" @click="edit">确 定</el-button>
+            </span>
+        </el-dialog>
+
+
     </div>
 </template>
 
@@ -83,14 +113,21 @@ export default {
                 children: 'zones',
                 isLeaf: 'leaf'
             },
-            tableData: [{
-                dictionaryId: '2016-05-02',
-                dictionaryCode: '王小虎',
-                dictionaryName: '123',
-                parentId:''
-            }],
+            tableData: [],
             search: '',
-            dialogVisible:false
+            dialogVisible:false,
+            dialogVisibleEdit:false,
+            isOnDictionaryId:'',
+            editDictionaryId:'',
+            addForm:{
+                dictionaryCode:'',
+                dictionaryName:''
+            },
+            editForm:{
+                dictionaryCode:'',
+                dictionaryName:'',
+                parentId:''
+            }
         }
     },
     mounted() {
@@ -104,20 +141,101 @@ export default {
             this.getTreeData(node,resolve)
         },
         treeHandleNodeClick(data){
-            console.log(data);
+            this.isOnDictionaryId = data.dictionaryId ? data.dictionaryId : '';
+            this.getTableList();
         },
-        handleEdit(index, row) {
-            console.log(index, row);
+        TreeHandleEdit(index, row) {
+            this.editForm = row;
+            this.dialogVisibleEdit = true;
         },
-        handleDelete(index, row) {
-            console.log(index, row);
+        TreeHandleDelete(index, row) {
+            this.$confirm('是否删除该字典字段', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this._api.post('/api/system/dictionaries/del',{
+                    dictionaryId:row.dictionaryId
+                },(res)=>{
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    this.getTableList();
+                    this.dialogVisibleEdit = false;
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
         },
         getTreeData(node, resolve){
             this._api.post('/api/system/dictionaries/list',{
                 parentId:node.data ? node.data.dictionaryId : ''
             },(res)=>{
+                this.tableData = res.result;
                 resolve(res.result)
             })
+        },
+        getTableList(){
+            this._api.post('/api/system/dictionaries/list',{
+                parentId:this.isOnDictionaryId
+            },(res)=>{
+                this.tableData = res.result;
+            })
+        },
+        add(){
+            this._api.post('/api/system/dictionaries/add',{
+                parentId:this.isOnDictionaryId,
+                dictionaryCode:this.addForm.dictionaryCode,
+                dictionaryName:this.addForm.dictionaryName,
+            },(res)=>{
+                this.$message({
+                    message: '添加成功',
+                    type: 'success'
+                });
+                this.getTableList();
+                this.dialogVisible = false;
+            })
+        },
+        addClose(){
+            this.dialogVisible = false;
+            this.addForm = {
+                dictionaryCode:'',
+                dictionaryName:''
+            };
+            this.$message({
+                message: '取消添加',
+                type: 'error'
+            });
+        },
+        edit(){
+            this._api.post('/api/system/dictionaries/edit',{
+                dictionaryId:this.editForm.dictionaryId,
+                dictionaryCode:this.editForm.dictionaryCode,
+                dictionaryName:this.editForm.dictionaryName,
+            },(res)=>{
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+                this.getTableList();
+                this.dialogVisibleEdit = false;
+            })
+        },
+        editClose(){
+            this.dialogVisibleEdit = false;
+            this.editForm = {
+                dictionaryCode:'',
+                dictionaryName:'',
+                parentId:''
+            };
+            this.$message({
+                message: '取消修改',
+                type: 'error'
+            });
         }
     }
     
