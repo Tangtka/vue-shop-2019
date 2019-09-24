@@ -19,12 +19,16 @@
                     :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 100%">
                 <el-table-column
+                        label="code"
+                        prop="dictionaryCode">
+                </el-table-column>
+                <el-table-column
                         label="名称"
                         prop="dictionaryName">
                 </el-table-column>
                 <el-table-column
                         label="属性值"
-                        prop="dictionaryCode">
+                        prop="dictionaryValue">
                 </el-table-column>
 
                 <el-table-column
@@ -61,8 +65,11 @@
                 <el-form-item label="parentId">
                     <el-input disabled v-model="isOnDictionaryId"></el-input>
                 </el-form-item>
+                <el-form-item label="code">
+                    <el-input disabled v-model="isOnDictionaryCode"></el-input>
+                </el-form-item>
                 <el-form-item label="属性值">
-                    <el-input v-model="addForm.dictionaryCode"></el-input>
+                    <el-input v-model="addForm.dictionaryValue"></el-input>
                 </el-form-item>
                 <el-form-item label="属性名称">
                     <el-input v-model="addForm.dictionaryName"></el-input>
@@ -83,8 +90,11 @@
                 <el-form-item label="parentId">
                     <el-input disabled v-model="editForm.parentId"></el-input>
                 </el-form-item>
+                <el-form-item label="code">
+                    <el-input disabled v-model="isOnDictionaryCode"></el-input>
+                </el-form-item>
                 <el-form-item label="属性值">
-                    <el-input v-model="editForm.dictionaryCode"></el-input>
+                    <el-input v-model="editForm.dictionaryValue"></el-input>
                 </el-form-item>
                 <el-form-item label="属性名称">
                     <el-input v-model="editForm.dictionaryName"></el-input>
@@ -118,7 +128,7 @@ export default {
             dialogVisible:false,
             dialogVisibleEdit:false,
             isOnDictionaryId:'',
-            editDictionaryId:'',
+            isOnDictionaryCode:'',
             addForm:{
                 dictionaryCode:'',
                 dictionaryName:''
@@ -142,6 +152,7 @@ export default {
         },
         treeHandleNodeClick(data){
             this.isOnDictionaryId = data.dictionaryId ? data.dictionaryId : '';
+            this.isOnDictionaryCode = data.dictionaryValue ? data.dictionaryValue : '';
             this.getTableList();
         },
         TreeHandleEdit(index, row) {
@@ -157,6 +168,13 @@ export default {
                 this._api.post('/api/system/dictionaries/del',{
                     dictionaryId:row.dictionaryId
                 },(res)=>{
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
@@ -175,6 +193,13 @@ export default {
             this._api.post('/api/system/dictionaries/list',{
                 parentId:node.data ? node.data.dictionaryId : ''
             },(res)=>{
+                if(res.status === 0){
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    });
+                    return
+                }
                 this.tableData = res.result;
                 resolve(res.result)
             })
@@ -183,15 +208,30 @@ export default {
             this._api.post('/api/system/dictionaries/list',{
                 parentId:this.isOnDictionaryId
             },(res)=>{
+                if(res.status === 0){
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    });
+                    return
+                }
                 this.tableData = res.result;
             })
         },
         add(){
             this._api.post('/api/system/dictionaries/add',{
                 parentId:this.isOnDictionaryId,
-                dictionaryCode:this.addForm.dictionaryCode,
+                dictionaryCode:this.isOnDictionaryCode,
                 dictionaryName:this.addForm.dictionaryName,
+                dictionaryValue:this.addForm.dictionaryValue,
             },(res)=>{
+                if(res.status === 0){
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    });
+                    return
+                }
                 this.$message({
                     message: '添加成功',
                     type: 'success'
@@ -214,9 +254,16 @@ export default {
         edit(){
             this._api.post('/api/system/dictionaries/edit',{
                 dictionaryId:this.editForm.dictionaryId,
-                dictionaryCode:this.editForm.dictionaryCode,
                 dictionaryName:this.editForm.dictionaryName,
+                dictionaryValue:this.editForm.dictionaryValue,
             },(res)=>{
+                if(res.status === 0){
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    });
+                    return
+                }
                 this.$message({
                     message: '修改成功',
                     type: 'success'

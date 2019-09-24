@@ -23,12 +23,14 @@ router.post('/dictionaries/list', function(req, res, next) {
                 message:err,
                 result:{}
             })
+        }else{
+            res.json({
+                status:1,
+                message:'查询成功',
+                result:dictionaries
+            })
         }
-        res.json({
-            status:1,
-            message:'查询成功',
-            result:dictionaries
-        })
+
     });
 
 });
@@ -41,11 +43,13 @@ router.post('/dictionaries/add', function(req, res, next) {
     let dictionaryId = 'd'+ tool.getRandom(),
         dictionaryCode = req.body.dictionaryCode,
         dictionaryName = req.body.dictionaryName,
+        dictionaryValue = req.body.dictionaryValue,
         parentId = req.body.parentId || '';
 
     Dictionaries.findOne({
         dictionaryCode,
-        dictionaryName,
+        dictionaryValue,
+        status:1
     },(err,dictionaries)=>{
         if(err){
             res.json({
@@ -61,29 +65,32 @@ router.post('/dictionaries/add', function(req, res, next) {
                 message:'字段冲突',
                 result:{}
             })
+        }else{
+            Dictionaries.create({
+                dictionaryId,
+                dictionaryCode,
+                dictionaryName,
+                dictionaryValue,
+                parentId,
+                status:1
+            }, (addErr, addDictionaries)=> {
+                if(addErr){
+                    res.json({
+                        status:0,
+                        message:'添加失败',
+                        result:{}
+                    })
+                }else{
+                    res.json({
+                        status:1,
+                        message:'添加成功',
+                        result:{}
+                    })
+                }
+            });
         }
 
-        Dictionaries.create({
-            dictionaryId,
-            dictionaryCode,
-            dictionaryName,
-            parentId,
-            status:1
-        }, (addErr, addDictionaries)=> {
-            if(addErr){
-                res.json({
-                    status:0,
-                    message:'添加失败',
-                    result:{}
-                })
-            }else{
-                res.json({
-                    status:1,
-                    message:'添加成功',
-                    result:{}
-                })
-            }
-        });
+
     });
 
 });
@@ -107,20 +114,22 @@ router.post('/dictionaries/del', function(req, res, next) {
                 message:err,
                 result:{}
             })
-        }
-        if(!dictionaries){
-            res.json({
-                status:0,
-                message:'不存在该Id',
-                result:{}
-            })
         }else{
-            res.json({
-                status:1,
-                message:'删除成功',
-                result:{}
-            })
+            if(!dictionaries){
+                res.json({
+                    status:0,
+                    message:'不存在该Id',
+                    result:{}
+                })
+            }else{
+                res.json({
+                    status:1,
+                    message:'删除成功',
+                    result:{}
+                })
+            }
         }
+
 
     });
 
@@ -132,15 +141,15 @@ router.post('/dictionaries/del', function(req, res, next) {
 * */
 router.post('/dictionaries/edit', function(req, res, next) {
     let dictionaryId = req.body.dictionaryId,
-        dictionaryCode = req.body.dictionaryCode,
         dictionaryName = req.body.dictionaryName;
+        dictionaryValue = req.body.dictionaryValue;
 
     Dictionaries.findOneAndUpdate({
-        dictionaryId:dictionaryId,
+        dictionaryId,
         status:1
     },{
-        dictionaryCode,
         dictionaryName,
+        dictionaryValue
     },(err,dictionaries)=>{
         if(err){
             res.json({
@@ -148,24 +157,58 @@ router.post('/dictionaries/edit', function(req, res, next) {
                 message:err,
                 result:{}
             })
+        }else{
+            if(!dictionaries){
+                res.json({
+                    status:0,
+                    message:'不存在该Id',
+                    result:{}
+                })
+            }else{
+                res.json({
+                    status:1,
+                    message:'修改成功',
+                    result:{}
+                })
+            }
         }
-        if(!dictionaries){
+
+
+    });
+
+});
+
+/*
+* 根据Code获取字典
+* */
+router.post('/dictionaries/code', function(req, res, next) {
+    let dictionaryCode = req.body.dictionaryCode;
+
+    Dictionaries.find({
+        dictionaryCode,
+        status:1
+    },{
+        _id:0,
+        __v:0
+    },(err,dictionaries)=>{
+        if(err){
             res.json({
                 status:0,
-                message:'不存在该Id',
+                message:err,
                 result:{}
             })
         }else{
             res.json({
                 status:1,
-                message:'修改成功',
-                result:{}
+                message:'查询成功',
+                result:dictionaries
             })
         }
 
     });
 
 });
+
 
 /*
 * 查询网站设置
@@ -186,13 +229,15 @@ router.get('/basicConfig', function(req, res, next) {
                 message:err,
                 result:basicConfig
             })
+        }else{
+            res.json({
+                status:1,
+                message:'查询成功',
+                result:basicConfig
+            })
         }
 
-        res.json({
-            status:1,
-            message:'查询成功',
-            result:basicConfig
-        })
+
 
     });
 
@@ -235,42 +280,46 @@ router.post('/basicConfig/edit', function(req, res, next) {
                 message:err,
                 result:{}
             })
-        }
-        if(basicConfig){
-            res.json({
-                status:1,
-                message:'修改成功',
-                result:{}
-            })
         }else{
-            BasicConfig.create({
-                websiteName,
-                websiteBrief,
-                websiteKeyword,
-                websiteDescribe,
-                websiteIcon,
-                websiteLogo,
-                websiteCopyright,
-                InternetContentProvider,
-                fileBrowsingAddress,
-                fileUploadAddress,
-                status:1,
-                typeCode:'SYSTEM_SET'
-            },(addErr,addBasicConfig)=>{
-                if(err){
-                    res.json({
-                        status:0,
-                        message:addErr,
-                        result:{}
-                    })
-                }
+            if(basicConfig){
                 res.json({
                     status:1,
-                    message:'添加成功',
+                    message:'修改成功',
                     result:{}
                 })
-            })
+            }else{
+                BasicConfig.create({
+                    websiteName,
+                    websiteBrief,
+                    websiteKeyword,
+                    websiteDescribe,
+                    websiteIcon,
+                    websiteLogo,
+                    websiteCopyright,
+                    InternetContentProvider,
+                    fileBrowsingAddress,
+                    fileUploadAddress,
+                    status:1,
+                    typeCode:'SYSTEM_SET'
+                },(addErr,addBasicConfig)=>{
+                    if(err){
+                        res.json({
+                            status:0,
+                            message:addErr,
+                            result:{}
+                        })
+                    }else{
+                        res.json({
+                            status:1,
+                            message:'添加成功',
+                            result:{}
+                        })
+                    }
+
+                })
+            }
         }
+
 
     });
 

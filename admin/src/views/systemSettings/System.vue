@@ -147,6 +147,13 @@
             },
             getData(){
                 this._api.get('/api/system/basicConfig',{},(res)=>{
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
                     if(!res.result)return;
                     this.formData = res.result;
                     this.icon.uploadImgList.push({
@@ -162,7 +169,13 @@
             editData(){
                 this.isEdit = true;
                 this._api.post('/api/system/basicConfig/edit',this.formData,(res)=>{
-                    console.log(res);
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
                     this.isEdit = false;
                     this.$message({
                         message: '保存/修改成功',
