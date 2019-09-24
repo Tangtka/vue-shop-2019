@@ -11,6 +11,16 @@ router.post('/list', function (req, res, next) {
     let pageSize = parseInt(req.body.pageSize);
     let pageCount = 0;
 
+    let advertising = Advertising.find({
+        status:1
+    },{
+        _id:0,
+        __v:0
+    });
+    advertising.sort({createTime:-1});
+    advertising.skip((pageNum-1)*pageSize);
+    advertising.limit(pageSize);
+
     Advertising.count({
         status:1
     },(err,count)=>{
@@ -22,33 +32,26 @@ router.post('/list', function (req, res, next) {
             })
         }
         pageCount = count;
-    });
-
-    let advertising = Advertising.find({
-        status:1
-    },{
-        _id:0,
-        __v:0
-    });
-    advertising.sort({createTime:-1});
-    advertising.skip((pageNum-1)*pageSize);
-    advertising.limit(pageSize);
-
-    advertising.exec((err,advertising)=>{
-        if(err){
+        advertising.exec((err,advertising)=>{
+            if(err){
+                res.json({
+                    status:0,
+                    message:err,
+                    result:{}
+                })
+            }
             res.json({
-                status:0,
-                message:err,
-                result:{}
+                status:1,
+                message:'查询成功',
+                pageCount:pageCount,
+                result:advertising,
             })
-        }
-        res.json({
-            status:1,
-            message:'查询成功',
-            pageCount:pageCount,
-            result:advertising,
-        })
+        });
     });
+
+
+
+
 });
 
 /*
@@ -60,6 +63,7 @@ router.post('/add', function (req, res, next) {
         advertisingUrl = req.body.advertisingUrl,
         advertisingImg = req.body.advertisingImg,
         advertisingType = req.body.advertisingType,
+        advertisingTypeName = req.body.advertisingTypeName,
         isPutaway = req.body.isPutaway,
         status = 1,
         createTime = tool.dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss'),
@@ -71,6 +75,7 @@ router.post('/add', function (req, res, next) {
         advertisingUrl,
         advertisingImg,
         advertisingType,
+        advertisingTypeName,
         isPutaway,
         status,
         createTime,
@@ -138,6 +143,7 @@ router.post('/edit', function (req, res, next) {
         advertisingUrl = req.body.advertisingUrl,
         advertisingImg = req.body.advertisingImg,
         advertisingType = req.body.advertisingType,
+        advertisingTypeName = req.body.advertisingTypeName,
         isPutaway = req.body.isPutaway;
 
     Advertising.findOneAndUpdate({
@@ -149,6 +155,7 @@ router.post('/edit', function (req, res, next) {
         advertisingUrl,
         advertisingImg,
         advertisingType,
+        advertisingTypeName,
         isPutaway,
         updateTime:tool.dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss')
     },(err,advertising)=> {

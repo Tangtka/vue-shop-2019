@@ -6,6 +6,7 @@ const AdvertisingSchema = new mongoose.Schema({
     advertisingUrl:String, //广告url
     advertisingImg:String, //图片
     advertisingType:Number, // 广告类型
+    advertisingTypeName:String, // 广告类型
     isPutaway:Boolean, //是否上架
     status:Number, //状态
     createTime:String, //创建时间

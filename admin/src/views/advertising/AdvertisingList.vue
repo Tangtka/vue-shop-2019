@@ -14,7 +14,7 @@
         </el-form>
 
         <el-table
-                :data="dataList"
+                :data="tableData"
                 style="width: 100%">
             <el-table-column
                     label="图片"
@@ -22,8 +22,8 @@
                 <template slot-scope="scope">
                     <el-image
                             style="width: 80px; height: 80px"
-                            :src="scope.row.imgUrl"
-                            :preview-src-list="[scope.row.imgUrl]"
+                            :src="scope.row.advertisingImg"
+                            :preview-src-list="[scope.row.advertisingImg]"
                             fit="fit"
                     ></el-image>
                 </template>
@@ -32,14 +32,14 @@
                     label="标题"
                     width="200">
                 <template slot-scope="scope">
-                    {{ scope.row.title }}
+                    {{ scope.row.advertisingTitle }}
                 </template>
             </el-table-column>
             <el-table-column
                     label="类型"
                     width="100">
                 <template slot-scope="scope">
-                    {{ scope.row.typeName }}
+                    {{ scope.row.advertisingTypeName }}
                 </template>
             </el-table-column>
             <el-table-column
@@ -57,13 +57,21 @@
                     label="广告链接"
                     width="200">
                 <template slot-scope="scope">
-                    {{ scope.row.linkUrl }}
+                    {{ scope.row.advertisingUrl }}
                 </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="editAdvertising">编辑</el-button>
-                    <el-button size="mini" type="danger">删除</el-button>
+                    <el-button
+                            size="mini"
+                            @click="editAdvertising"
+                            icon="el-icon-edit"
+                    ></el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            icon="el-icon-delete"
+                    ></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -73,24 +81,22 @@
 <script>
     export default {
         name: "AdvertisingList",
-        components: {},
+        components: {
+            'Pagination': () => import('./../../components/Pagination.vue')
+        },
         data() {
             return {
-                dataList: [
-                    {
-                        imgUrl: 'https://tse1-mm.cn.bing.net/th?id=OET.bcb12cf6916f44589bf7433cc0927eaa&w=272&h=272&c=7&rs=1&o=5&pid=1.9',
-                        title: '广告标题',
-                        typeId: '1',
-                        typeName: '首页',
-                        isPutaway: false,
-                        linkUrl: 'https://star.xiziwang.net/uploads/allimg/140811/34_140811215510_1.jpg'
-                    }
-                ],
+                tableData: [],
                 loading: false,
+                page: {
+                    num: 1,
+                    size: 10,
+                },
+                total: 0
             }
         },
         mounted() {
-
+            this.getData();
         },
         methods: {
             addAdvertising() {
@@ -98,7 +104,27 @@
             },
             editAdvertising() {
                 this.$router.push({path: '/editAdvertising', query: {type: 'edit'}})
-            }
+            },
+            /*getDictionaries(){
+                this._api.post('/api/system/dictionaries/code',{
+                    dictionaryCode:'advertising'
+                },(res)=>{
+                    console.log(res);
+                })
+            },*/
+            setPageSize(val) {
+                this.page.size = val;
+            },
+            getData(val) {
+                this.loading = true;
+                this._api.post('/api/advertising/list',{
+                    dictionaryCode:'advertising'
+                },(res)=>{
+                    console.log(res);
+                    this.tableData = res.result;
+                    this.loading = false;
+                })
+            },
         }
 
     }
