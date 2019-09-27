@@ -182,5 +182,40 @@ router.post('/edit', function (req, res, next) {
     });
 });
 
+/*
+* 根据id查某一条
+* */
+router.post('/findOne', function (req, res, next) {
+    let advertisingId = req.body.advertisingId;
+
+    Advertising.findOne({
+        advertisingId,
+        status:1
+    },{
+        _id:0,
+        __v:0
+    },(err,advertising)=> {
+        if (err) {
+            res.json({
+                status: 0,
+                message: err,
+                result: {}
+            })
+        }
+        if (!advertising) {
+            res.json({
+                status: 0,
+                message: '不存在该Id',
+                result: {}
+            })
+        } else {
+            res.json({
+                status: 1,
+                message: '查询成功',
+                result: advertising
+            })
+        }
+    });
+});
 
 module.exports = router;

@@ -5,15 +5,21 @@
         <div class="el-main">
             <el-form label-width="80px">
                 <el-form-item label="标题">
-                    <el-input v-model="formData.title"></el-input>
+                    <el-input v-model="formData.advertisingTitle"></el-input>
                 </el-form-item>
                 <el-form-item label="类型">
-                    <el-select v-model="formData.typeName" clearable  placeholder="请选择">
+                    <el-select
+                            v-model="formData.advertisingType"
+                            clearable
+                            placeholder="请选择"
+                            @change="selectHandleChange"
+                            @clear="selectHandleClear"
+                    >
                         <el-option
-                                v-for="item in adType"
-                                :key="item.typeId"
-                                :label="item.typeName"
-                                :value="item.typeName">
+                            v-for="item in dictionaryList"
+                            :key="item.dictionaryId"
+                            :label="item.dictionaryName"
+                            :value="item.dictionaryValue">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -25,7 +31,7 @@
                     </el-switch>
                 </el-form-item>
                 <el-form-item label="链接">
-                    <el-input></el-input>
+                    <el-input v-model="formData.advertisingUrl"></el-input>
                 </el-form-item>
                 <el-form-item label="图片">
                     <el-upload
@@ -37,12 +43,16 @@
                             :on-exceed="handleExceed"
                             :on-error="handleError"
                             :limit="limit"
+
                     >
                         <i class="el-icon-plus"></i>
                     </el-upload>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary">添加</el-button>
+                <el-form-item v-if="type==='edit'">
+                    <el-button type="primary" @click="edit">修改</el-button>
+                </el-form-item>
+                <el-form-item v-if="type==='add'">
+                    <el-button type="primary" @click="add">添加</el-button>
                     <el-button>重置</el-button>
                 </el-form-item>
             </el-form>
@@ -72,17 +82,20 @@
                     }
                 ],
                 formData:{
-                    imgUrl:'',
-                    title:'',
-                    typeId:'',
-                    typeName:'',
+                    advertisingTitle:'',
+                    advertisingUrl:'',
+                    advertisingImg:'',
+                    advertisingType:'',
+                    advertisingTypeName:'',
                     isPutaway:false,
-                    linkUrl:''
-                }
+                },
+                dictionaryList:[],
+                advertisingId:'',
 
             }
         },
         mounted() {
+            this.advertisingId = this.$route.query.advertisingId;
             this.type = this.$route.query.type;
             switch (this.type) {
                 case 'add':
@@ -90,8 +103,10 @@
                     break;
                 case 'edit' :
                     this.content = '编辑广告';
+                    this.getData();
                     break;
             }
+            this.getDictionaries();
         },
         methods: {
             handleRemove(file, fileList) {
@@ -106,6 +121,7 @@
                     name: 'icon',
                     url: this.baseImgUrl + response.data
                 });
+                this.formData.advertisingImg = response.data;
                 this.$message({
                     message: '上传成功',
                     type: 'success'
@@ -123,9 +139,83 @@
                     type: 'error'
                 });
             },
+            selectHandleChange(val){
+                this.dictionaryList.forEach((item)=>{
+                    if(item.dictionaryValue === val){
+                        this.formData.advertisingTypeName = item.dictionaryName;
+                    }
+                })
+            },
+            selectHandleClear(){
+                this.formData.advertisingTypeName = ''
+            },
             goBack() {
-                this.$router.replace({path: '/productList'})
-            }
+                this.$router.replace({path: '/advertisingList'});
+            },
+            getDictionaries(){
+                this._api.post('/api/system/dictionaries/code',{
+                    dictionaryCode:'advertising'
+                },(res)=>{
+                    if(res.status === 1){
+                        this.dictionaryList = res.result
+                    }else{
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            getData(){
+                this._api.post('/api/advertising/findOne',{
+                    advertisingId:this.advertisingId
+                },(res)=>{
+                    if(res.status === 1){
+                        this.formData = res.result;
+                        this.uploadImgList.push({
+                            name: 'icon',
+                            url: this.baseImgUrl+res.result.advertisingImg
+                        })
+                    }else{
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            edit(){
+                this._api.post('/api/advertising/edit',this.formData,(res)=>{
+                    if(res.status === 1){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.goBack();
+                    }else{
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            add(){
+                this._api.post('/api/advertising/add',this.formData,(res)=>{
+                    if(res.status === 1){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.goBack();
+                    }else{
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
         }
 
     }

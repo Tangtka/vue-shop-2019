@@ -21,10 +21,10 @@
                     width="150">
                 <template slot-scope="scope">
                     <el-image
-                            style="width: 80px; height: 80px"
-                            :src="scope.row.advertisingImg"
+                            style="width: 80px; height: 80px;background-color: #000;"
+                            :src="baseImgUrl+scope.row.advertisingImg"
                             :preview-src-list="[scope.row.advertisingImg]"
-                            fit="fit"
+                            fit="contain"
                     ></el-image>
                 </template>
             </el-table-column>
@@ -49,7 +49,9 @@
                     <el-switch
                             v-model="scope.row.isPutaway"
                             active-text=""
-                            inactive-text="">
+                            inactive-text=""
+                            disabled
+                    >
                     </el-switch>
                 </template>
             </el-table-column>
@@ -64,21 +66,26 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="editAdvertising"
                             icon="el-icon-edit"
+                            @click="editAdvertising(scope.row.advertisingId)"
                     ></el-button>
                     <el-button
                             size="mini"
                             type="danger"
                             icon="el-icon-delete"
+                            @click="del(scope.row.advertisingId)"
                     ></el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <Pagination :page="page" :total="total" :getData="getData" :setPageSize="setPageSize"></Pagination>
     </div>
 </template>
 
 <script>
+    import {baseImgUrl} from './../../config/index.js'
+
     export default {
         name: "AdvertisingList",
         components: {
@@ -86,6 +93,7 @@
         },
         data() {
             return {
+                baseImgUrl:baseImgUrl,
                 tableData: [],
                 loading: false,
                 page: {
@@ -96,34 +104,57 @@
             }
         },
         mounted() {
-            this.getData();
+            this.getData(this.page.num);
         },
         methods: {
             addAdvertising() {
                 this.$router.push({path: '/editAdvertising', query: {type: 'add'}})
             },
-            editAdvertising() {
-                this.$router.push({path: '/editAdvertising', query: {type: 'edit'}})
+            editAdvertising(val) {
+                this.$router.push({path: '/editAdvertising', query: {type: 'edit',advertisingId:val}})
             },
-            /*getDictionaries(){
-                this._api.post('/api/system/dictionaries/code',{
-                    dictionaryCode:'advertising'
-                },(res)=>{
-                    console.log(res);
-                })
-            },*/
             setPageSize(val) {
                 this.page.size = val;
             },
             getData(val) {
                 this.loading = true;
                 this._api.post('/api/advertising/list',{
-                    dictionaryCode:'advertising'
+                    pageNum:val,
+                    pageSize:this.page.size,
                 },(res)=>{
-                    console.log(res);
+                    this.total = res.pageCount;
                     this.tableData = res.result;
                     this.loading = false;
                 })
+            },
+            del(val){
+                this.$confirm('是否删除该条广告', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this._api.post('/api/advertising/del',{
+                        advertisingId:val
+                    },(res)=>{
+                        if(res.status === 1){
+                            this.getData(this.page.num);
+                            this.$message({
+                                message: res.message,
+                                type: 'success'
+                            });
+                        }else{
+                            this.$message({
+                                message: res.message,
+                                type: 'error'
+                            });
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
         }
 
