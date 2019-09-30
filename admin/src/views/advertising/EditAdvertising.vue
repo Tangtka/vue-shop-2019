@@ -111,6 +111,7 @@
         methods: {
             handleRemove(file, fileList) {
                 this.uploadImgList = [];
+                this.formData.advertisingImg = '';
                 this.$message({
                     message: '删除成功',
                     type: 'success'
