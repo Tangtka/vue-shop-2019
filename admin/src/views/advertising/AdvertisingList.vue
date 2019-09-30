@@ -22,7 +22,7 @@
                 <template slot-scope="scope">
                     <el-image
                             style="width: 80px; height: 80px;background-color: #000;"
-                            :src="baseImgUrl+scope.row.advertisingImg"
+                            :src="scope.row.advertisingImg"
                             :preview-src-list="[scope.row.advertisingImg]"
                             fit="contain"
                     ></el-image>
@@ -125,6 +125,9 @@
                     this.total = res.pageCount;
                     this.tableData = res.result;
                     this.loading = false;
+                    this.tableData.forEach((item)=>{
+                        item.advertisingImg = this.baseImgUrl + item.advertisingImg;
+                    })
                 })
             },
             del(val){
