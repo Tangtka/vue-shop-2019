@@ -62,6 +62,13 @@
                     pageNum:val,
                     pageSize:this.page.size,
                 },(res)=>{
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
                     this.total = res.pageCount;
                     this.tableData = res.result;
                     this.loading = false;
