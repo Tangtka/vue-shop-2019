@@ -2,13 +2,20 @@
     <div id="AddUser">
         <el-page-header @back="goBack" :content="content"></el-page-header>
         <div class="el-main">
-            <el-form label-width="80px" >
+            <el-form label-width="80px">
                 <el-form-item label="类型">
-                    <el-select v-model="formData.type" clearable placeholder="请选择">
+                    <el-select
+                            v-model="formData.accountType"
+                            clearable
+                            placeholder="请选择"
+                            @change="selectHandleChange"
+                            @clear="selectHandleClear"
+                    >
                         <el-option
-                                v-for="item in userType"
-                                :key="item.typeId"
-                                :value="item.typeName">
+                                v-for="item in dictionaryList"
+                                :key="item.dictionaryId"
+                                :label="item.dictionaryName"
+                                :value="item.dictionaryValue">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -20,8 +27,8 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary">创建</el-button>
-                    <el-button>重置</el-button>
+                    <el-button type="primary" @click="add">创建</el-button>
+                    <el-button @click="reset">重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -37,16 +44,13 @@
             return {
                 type: '',
                 content: '',
-                userType:[
-                    {
-                        typeId:1,
-                        typeName:'用户'
-                    }
-                ],
-                formData:{
-                    userName:'',
-                    userPwd:'',
-                    type:'',
+                dictionaryList: [],
+                formData: {
+                    userName: '', //用户名
+                    userPwd: '', //密码
+                    accountType: '', // 账号类型
+                    accountTypeName: '', // 账号类型
+                    mobile: '', //手机号
                 }
             }
         },
@@ -60,10 +64,60 @@
                     this.content = '添加用户';
                     break;
             }
+            this.getDictionaries();
         },
         methods: {
             goBack() {
                 this.$router.replace({path: '/' + this.type})
+            },
+            selectHandleChange(val) {
+                this.dictionaryList.forEach((item) => {
+                    if (item.dictionaryValue === val) {
+                        this.formData.accountTypeName = item.dictionaryName;
+                    }
+                })
+            },
+            selectHandleClear() {
+                this.formData.accountTypeName = ''
+            },
+            getDictionaries() {
+                this._api.post('/api/system/dictionaries/code', {
+                    dictionaryCode: 'users'
+                }, (res) => {
+                    if (res.status === 1) {
+                        this.dictionaryList = res.result
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            add() {
+                this._api.post('/api/users/add', this.formData, (res) => {
+                    if (res.status === 1) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.goBack();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            reset() {
+                this.formData = {
+                    userName: '', //用户名
+                    userPwd: '', //密码
+                    accountType: '', // 账号类型
+                    accountTypeName: '', // 账号类型
+                    mobile: '', //手机号
+                }
             }
         }
 

@@ -13,51 +13,51 @@ router.post('/list', function (req, res, next) {
         pageSize = parseInt(req.body.pageSize),
         adminUsers = null,
         users = null;
-    if(!accountType){
+    if (!accountType) {
         res.json({
-            status:0,
-            message:'accountType 不能为空',
-            result:{}
+            status: 0,
+            message: 'accountType 不能为空',
+            result: {}
         })
     }
     switch (accountType) {
         case '1':
         case '2':
             adminUsers = AdminUsers.find({
-                accountType,
-                status:1
-            },{
-                _id:0,
-                __v:0
+                $or: [{accountType:1},{accountType:2}],
+                status: 1
+            }, {
+                _id: 0,
+                __v: 0
             });
-            adminUsers.sort({createTime:-1});
-            adminUsers.skip((pageNum-1)*pageSize);
+            adminUsers.sort({createTime: -1});
+            adminUsers.skip((pageNum - 1) * pageSize);
             adminUsers.limit(pageSize);
 
             AdminUsers.count({
-                accountType,
-                status:1
-            },(err,count)=>{
-                if(err){
+                $or: [{accountType:1},{accountType:2}],
+                status: 1
+            }, (err, count) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
-                adminUsers.exec((err,users)=>{
-                    if(err){
+                adminUsers.exec((err, users) => {
+                    if (err) {
                         res.json({
-                            status:0,
-                            message:err,
-                            result:{}
+                            status: 0,
+                            message: err,
+                            result: {}
                         })
                     }
                     res.json({
-                        status:1,
-                        message:'查询成功',
-                        pageCount:count,
-                        result:users,
+                        status: 1,
+                        message: '查询成功',
+                        pageCount: count,
+                        result: users,
                     })
                 });
             });
@@ -65,39 +65,39 @@ router.post('/list', function (req, res, next) {
         case '3':
             users = Users.find({
                 accountType,
-                status:1
-            },{
-                _id:0,
-                __v:0
+                status: 1
+            }, {
+                _id: 0,
+                __v: 0
             });
-            users.sort({createTime:-1});
-            users.skip((pageNum-1)*pageSize);
+            users.sort({createTime: -1});
+            users.skip((pageNum - 1) * pageSize);
             users.limit(pageSize);
 
             Users.count({
                 accountType,
-                status:1
-            },(err,count)=>{
-                if(err){
+                status: 1
+            }, (err, count) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
-                users.exec((err,users)=>{
-                    if(err){
+                users.exec((err, users) => {
+                    if (err) {
                         res.json({
-                            status:0,
-                            message:err,
-                            result:{}
+                            status: 0,
+                            message: err,
+                            result: {}
                         })
                     }
                     res.json({
-                        status:1,
-                        message:'查询成功',
-                        pageCount:count,
-                        result:users,
+                        status: 1,
+                        message: '查询成功',
+                        pageCount: count,
+                        result: users,
                     })
                 });
             });
@@ -121,47 +121,47 @@ router.post('/add', function (req, res, next) {
         status: 1
     };
 
-    if(!params.accountType){
+    if (!params.accountType) {
         res.json({
-            status:0,
-            message:'accountType 不能为空',
-            result:{}
+            status: 0,
+            message: 'accountType 不能为空',
+            result: {}
         })
     }
     switch (params.accountType) {
         case '1':
         case '2':
             AdminUsers.findOne({
-                userName:params.userName,
-                status:1,
-            },(err,user)=>{
-                if(err){
+                userName: params.userName,
+                status: 1,
+            }, (err, user) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
 
-                if(user){
+                if (user) {
                     res.json({
-                        status:0,
-                        message:'用户名重复',
-                        result:{},
+                        status: 0,
+                        message: '用户名重复',
+                        result: {},
                     })
-                }else{
-                    AdminUsers.create(params,(addErr,addUser)=>{
-                        if(addErr){
+                } else {
+                    AdminUsers.create(params, (addErr, addUser) => {
+                        if (addErr) {
                             res.json({
-                                status:0,
-                                message:addErr,
-                                result:{}
+                                status: 0,
+                                message: addErr,
+                                result: {}
                             })
-                        }else{
+                        } else {
                             res.json({
-                                status:1,
-                                message:'添加成功',
-                                result:{}
+                                status: 1,
+                                message: '添加成功',
+                                result: {}
                             })
                         }
                     })
@@ -170,36 +170,36 @@ router.post('/add', function (req, res, next) {
             break;
         case '3':
             Users.findOne({
-                userName:params.userName,
-                status:1,
-            },(err,user)=>{
-                if(err){
+                userName: params.userName,
+                status: 1,
+            }, (err, user) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
 
-                if(user){
+                if (user) {
                     res.json({
-                        status:0,
-                        message:'用户名重复',
-                        result:{},
+                        status: 0,
+                        message: '用户名重复',
+                        result: {},
                     })
-                }else{
-                    Users.create(params,(addErr,addUser)=>{
-                        if(addErr){
+                } else {
+                    Users.create(params, (addErr, addUser) => {
+                        if (addErr) {
                             res.json({
-                                status:0,
-                                message:addErr,
-                                result:{}
+                                status: 0,
+                                message: addErr,
+                                result: {}
                             })
-                        }else{
+                        } else {
                             res.json({
-                                status:1,
-                                message:'添加成功',
-                                result:{}
+                                status: 1,
+                                message: '添加成功',
+                                result: {}
                             })
                         }
                     })
@@ -215,7 +215,7 @@ router.post('/add', function (req, res, next) {
 * */
 router.post('/edit', function (req, res, next) {
     let params = {
-        userId: req.body.userName,
+        userId: req.body.userId,
         userName: req.body.userName,
         userPwd: req.body.userPwd,
         accountType: req.body.accountType,
@@ -225,79 +225,79 @@ router.post('/edit', function (req, res, next) {
         status: 1
     };
 
-    if(!params.accountType){
+    if (!params.accountType) {
         res.json({
-            status:0,
-            message:'accountType 不能为空',
-            result:{}
+            status: 0,
+            message: 'accountType 不能为空',
+            result: {}
         })
     }
     switch (params.accountType) {
         case '1':
         case '2':
             AdminUsers.findOneAndUpdate({
-                userName:params.userId,
-                status:1,
-            },{
-                userName:params.userName,
-                userPwd:params.userPwd,
-                accountType:params.accountType,
-                accountTypeName:params.accountTypeName,
-                mobile:params.mobile,
-                updateTime:params.updateTime,
-            },(err,user)=>{
-                if(err){
+                userId: params.userId,
+                status: 1,
+            }, {
+                userName: params.userName,
+                userPwd: params.userPwd,
+                accountType: params.accountType,
+                accountTypeName: params.accountTypeName,
+                mobile: params.mobile,
+                updateTime: params.updateTime,
+            }, (err, user) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
-                if(user){
+                if (user) {
                     res.json({
-                        status:1,
-                        message:'修改成功',
-                        result:{}
+                        status: 1,
+                        message: '修改成功',
+                        result: {}
                     })
-                }else{
+                } else {
                     res.json({
-                        status:0,
-                        message:'查询不到该用户',
-                        result:{}
+                        status: 0,
+                        message: '查询不到该用户',
+                        result: {}
                     })
                 }
             });
             break;
         case '3':
             Users.findOneAndUpdate({
-                userName:params.userId,
-                status:1,
-            },{
-                userName:params.userName,
-                userPwd:params.userPwd,
-                accountType:params.accountType,
-                accountTypeName:params.accountTypeName,
-                mobile:params.mobile,
-                updateTime:params.updateTime,
-            },(err,user)=>{
-                if(err){
+                userId: params.userId,
+                status: 1,
+            }, {
+                userName: params.userName,
+                userPwd: params.userPwd,
+                accountType: params.accountType,
+                accountTypeName: params.accountTypeName,
+                mobile: params.mobile,
+                updateTime: params.updateTime,
+            }, (err, user) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
-                if(user){
+                if (user) {
                     res.json({
-                        status:1,
-                        message:'修改成功',
-                        result:{}
+                        status: 1,
+                        message: '修改成功',
+                        result: {}
                     })
-                }else{
+                } else {
                     res.json({
-                        status:0,
-                        message:'查询不到该用户',
-                        result:{}
+                        status: 0,
+                        message: '查询不到该用户',
+                        result: {}
                     })
                 }
             });
@@ -310,80 +310,72 @@ router.post('/edit', function (req, res, next) {
 * 删除用户信息
 * */
 router.post('/del', function (req, res, next) {
-    let params = {
-        userId: req.body.userName,
-        userName: req.body.userName,
-        userPwd: req.body.userPwd,
-        accountType: req.body.accountType,
-        accountTypeName: req.body.accountTypeName,
-        mobile: req.body.mobile,
-        updateTime: tool.dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss'),
-        status: 1
-    };
+    let userId = req.body.userId,
+        accountType = req.body.accountType;
 
-    if(!params.accountType){
+    if (!accountType) {
         res.json({
-            status:0,
-            message:'accountType 不能为空',
-            result:{}
+            status: 0,
+            message: 'accountType 不能为空',
+            result: {}
         })
     }
-    switch (params.accountType) {
+    switch (accountType) {
         case '1':
         case '2':
             AdminUsers.findOneAndUpdate({
-                userName:params.userId,
-                status:1,
-            },{
-                status:0
-            },(err,user)=>{
-                if(err){
+                userId,
+                status: 1,
+            }, {
+                status: 0
+            }, (err, user) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
-                if(user){
+                if (user) {
                     res.json({
-                        status:1,
-                        message:'删除成功',
-                        result:{}
+                        status: 1,
+                        message: '删除成功',
+                        result: {}
                     })
-                }else{
+                } else {
                     res.json({
-                        status:0,
-                        message:'查询不到该用户',
-                        result:{}
+                        status: 0,
+                        message: '查询不到该用户',
+                        result: {}
                     })
                 }
             });
             break;
         case '3':
             Users.findOneAndUpdate({
-                userName:params.userId,
-                status:1,
-            },{
-                status:0
-            },(err,user)=>{
-                if(err){
+                userId,
+                status: 1,
+            }, {
+                status: 0
+            }, (err, user) => {
+                if (err) {
                     res.json({
-                        status:0,
-                        message:err,
-                        result:{}
+                        status: 0,
+                        message: err,
+                        result: {}
                     })
                 }
-                if(user){
+                if (user) {
                     res.json({
-                        status:1,
-                        message:'删除成功',
-                        result:{}
+                        status: 1,
+                        message: '删除成功',
+                        result: {}
                     })
-                }else{
+                } else {
                     res.json({
-                        status:0,
-                        message:'查询不到该用户',
-                        result:{}
+                        status: 0,
+                        message: '查询不到该用户',
+                        result: {}
                     })
                 }
             });
@@ -391,5 +383,86 @@ router.post('/del', function (req, res, next) {
     }
 
 });
+
+/*
+* 查询单个用户信息
+* */
+router.post('/findOne', function (req, res, next) {
+    let userId = req.body.userId,
+        accountType = req.body.accountType;
+
+    if (!accountType) {
+        res.json({
+            status: 0,
+            message: 'accountType 不能为空',
+            result: {}
+        })
+    }
+    switch (accountType) {
+        case '1':
+        case '2':
+            AdminUsers.findOne({
+                userId,
+                status: 1,
+            }, {
+                _id: 0,
+                __v: 0
+            }, (err, user) => {
+                if (err) {
+                    res.json({
+                        status: 0,
+                        message: err,
+                        result: {}
+                    })
+                }
+                if (!user) {
+                    res.json({
+                        status: 0,
+                        message: '没有当前用户ID',
+                        result: {}
+                    })
+                } else {
+                    res.json({
+                        status: 1,
+                        message: '查询成功',
+                        result: user
+                    })
+                }
+            });
+            break;
+        case '3':
+            Users.findOne({
+                userId,
+                status: 1,
+            }, {
+                _id: 0,
+                __v: 0
+            }, (err, user) => {
+                if (err) {
+                    res.json({
+                        status: 0,
+                        message: err,
+                        result: {}
+                    })
+                }
+                if (!user) {
+                    res.json({
+                        status: 0,
+                        message: '没有当前用户ID',
+                        result: {}
+                    })
+                } else {
+                    res.json({
+                        status: 1,
+                        message: '查询成功',
+                        result: user
+                    })
+                }
+            });
+            break;
+    }
+
+});
+
 
 module.exports = router;

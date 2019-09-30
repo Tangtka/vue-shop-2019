@@ -30,15 +30,27 @@
                     label="用户权限"
                     width="180">
                 <template slot-scope="scope">
-                    <el-tag type="warning">
-                        {{ scope.row.authorityName }}
+                    <el-tag type="danger" v-if="scope.row.accountType === '1'">
+                        {{ scope.row.accountTypeName }}
+                    </el-tag>
+                    <el-tag type="success" v-if="scope.row.accountType === '2'">
+                        {{ scope.row.accountTypeName }}
                     </el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="editUser">编辑</el-button>
-                    <el-button size="mini" type="danger">删除</el-button>
+                    <el-button
+                            size="mini"
+                            icon="el-icon-edit"
+                            @click="editUser(scope.row.userId)"
+                    ></el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            icon="el-icon-delete"
+                            @click="delUser(scope.row.userId)"
+                    ></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -55,14 +67,7 @@
         },
         data() {
             return {
-                dataList: [
-                    {
-                        userId: 'userId',
-                        userName: 'userName',
-                        authorityId: 'authorityId',
-                        authorityName: 'authorityName'
-                    }
-                ],
+                dataList: [],
                 loading: false,
                 page: {
                     num: 1,
@@ -72,19 +77,31 @@
             }
         },
         mounted() {
-
+            this.getData(this.page.num)
         },
         methods: {
             setPageSize(val) {
                 this.page.size = val;
-                console.log(val)
             },
             getData(val) {
                 this.loading = true;
-                setTimeout(() => {
+                this._api.post('/api/users/list',{
+                    accountType:'1',
+                    pageNum:val,
+                    pageSize:this.page.size,
+                },(res)=>{
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
+                    console.log(res);
+                    this.total = res.pageCount;
+                    this.dataList = res.result;
                     this.loading = false;
-                }, 1000);
-                console.log(val)
+                })
             },
             addUser() {
                 this.$router.push({
@@ -93,13 +110,44 @@
                     }
                 })
             },
-            editUser() {
+            editUser(val) {
                 this.$router.push({
                     path: '/editUser', query: {
-                        type: 'admin'
+                        type: 'admin',
+                        userId:val
                     }
                 })
-            }
+            },
+            delUser(val) {
+                this.$confirm('是否删除该用户', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this._api.post('/api/users/del',{
+                        accountType:'1',
+                        userId:val,
+                    },(res)=>{
+                        if(res.status === 0){
+                            this.$message({
+                                message: res.message,
+                                type: 'error'
+                            });
+                            return
+                        }
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.getData(this.page.num)
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
         }
 
     }
