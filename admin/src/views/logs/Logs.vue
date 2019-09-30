@@ -62,7 +62,6 @@
                     pageNum:val,
                     pageSize:this.page.size,
                 },(res)=>{
-                    console.log(res);
                     this.total = res.pageCount;
                     this.tableData = res.result;
                     this.loading = false;
