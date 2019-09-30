@@ -216,7 +216,7 @@ router.post('/findOne', function (req, res, next) {
             res.json({
                 status: 1,
                 message: '查询成功',
-                result: {}
+                result: product
             })
         } else {
             res.json({

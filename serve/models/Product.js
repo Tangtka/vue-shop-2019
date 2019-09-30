@@ -5,7 +5,7 @@ const ProductSchema = new mongoose.Schema({
     productName:String, //名称
     productPrice:String, //价格
     productImg:String, //封面图
-    productImgList:Array, //图片列表
+    productImgList:String, //图片列表
     isHot:Boolean, //热销
     isNewProduct:Boolean, //新品
     status:Number, //状态

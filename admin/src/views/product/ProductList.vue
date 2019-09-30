@@ -23,9 +23,10 @@
                     width="120">
                 <template slot-scope="scope">
                     <el-image
-                            style="width: 100px; height: 100px"
-                            :src="scope.row.imgUrl"
-                            fit="fit"></el-image>
+                            style="width: 100px; height: 100px;background-color: #000;"
+                            :src="scope.row.productImg"
+                            :preview-src-list="[scope.row.productImg]"
+                            fit="contain"></el-image>
                 </template>
             </el-table-column>
 
@@ -65,8 +66,17 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="editProduct">编辑</el-button>
-                    <el-button size="mini" type="danger">删除</el-button>
+                    <el-button
+                            size="mini"
+                            icon="el-icon-edit"
+                            @click="editProduct(scope.row.productId)"
+                    ></el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            icon="el-icon-delete"
+                            @click="delProduct(scope.row.productId)"
+                    ></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -76,6 +86,7 @@
 </template>
 
 <script>
+    import {baseImgUrl} from './../../config/index.js'
     export default {
         name: 'ProductList',
         components: {
@@ -83,15 +94,8 @@
         },
         data() {
             return {
-                dataList: [
-                    {
-                        productName: 'productName',
-                        productPrice: 'productPrice',
-                        imgUrl:'https://cn.bing.com/th?id=OIP.FoBT-qA_iA9psFLRC6ivHAAAAA&pid=Api&rs=1',
-                        isHot: false,
-                        isfresh: true,
-                    }
-                ],
+                baseImgUrl:baseImgUrl,
+                dataList: [],
                 loading: false,
                 page: {
                     num: 1,
@@ -101,7 +105,7 @@
             }
         },
         mounted() {
-
+            this.getData(this.page.num)
         },
         methods: {
             setPageSize(val) {
@@ -110,10 +114,25 @@
             },
             getData(val) {
                 this.loading = true;
-                setTimeout(() => {
+                this._api.post('/api/product/list',{
+                    pageNum:val,
+                    pageSize:this.page.size,
+                },(res)=>{
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
+                    console.log(res);
+                    this.total = res.pageCount;
+                    this.dataList = res.result;
                     this.loading = false;
-                }, 1000);
-                console.log(val)
+                    this.dataList.forEach((item)=>{
+                        item.productImg = this.baseImgUrl + item.productImg;
+                    })
+                })
             },
             addProduct() {
                 this.$router.push({
@@ -122,13 +141,43 @@
                     }
                 })
             },
-            editProduct() {
+            editProduct(val) {
                 this.$router.push({
                     path: '/editProduct', query: {
-                        type: 'edit'
+                        type: 'edit',
+                        productId:val
                     }
                 })
-            }
+            },
+            delProduct(val){
+                this.$confirm('是否删除该产品', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this._api.post('/api/product/del',{
+                        productId:val
+                    },(res)=>{
+                        if(res.status === 1){
+                            this.getData(this.page.num);
+                            this.$message({
+                                message: res.message,
+                                type: 'success'
+                            });
+                        }else{
+                            this.$message({
+                                message: res.message,
+                                type: 'error'
+                            });
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
         },
     }
 </script>
