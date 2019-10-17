@@ -75,7 +75,8 @@
                         message: res.message,
                         type: 'success'
                     });
-                    storage.setLocalStorage('userInfo',res.result)
+                    storage.setLocalStorage('userInfo',res.result);
+                    this.$router.push({path:'/index'})
                 })
             }
         }

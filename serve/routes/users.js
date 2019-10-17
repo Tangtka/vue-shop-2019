@@ -3,6 +3,7 @@ var router = express.Router();
 const AdminUsers = require('../models/AdminUsers.js');
 const Users = require('../models/Users.js');
 const tool = require('../utils/tool.js');
+const redis = require('../utils/redis.js');
 
 /*
 * 查询用户列表
@@ -515,16 +516,51 @@ router.post('/login', function (req, res, next) {
                         result: {}
                     })
                 }else{
-                    res.json({
-                        status: 1,
-                        message: '登录成功',
-                        result: user1
+                    redis.addKey(user1.userId,user1.userId,(redisErr,redisRes)=>{
+                        if(redisErr){
+                            res.json({
+                                status: 0,
+                                message: '登陆失败',
+                                result: {}
+                            });
+                        }else if(redisRes === 'OK'){
+                            res.json({
+                                status: 1,
+                                message: '登录成功',
+                                result: user1
+                            });
+                        }
                     })
                 }
 
             });
         }
     });
+
+});
+
+
+/*
+* 路由拦截
+* */
+router.post('/loginCheck', function (req, res, next) {
+    let userId = req.body.userId;
+
+    redis.findKey(userId,(redisErr,redisRes)=>{
+        if(redisErr){
+            res.json({
+                status: 0,
+                message: '请重新登录',
+                result: {}
+            });
+        }else if(redisRes === 'OK'){
+            res.json({
+                status: 1,
+                message: '存在登录信息',
+                result: {}
+            });
+        }
+    })
 
 });
 
