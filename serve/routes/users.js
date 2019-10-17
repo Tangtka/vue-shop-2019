@@ -465,4 +465,68 @@ router.post('/findOne', function (req, res, next) {
 });
 
 
+/*
+* 登录
+* */
+router.post('/login', function (req, res, next) {
+    let userName = req.body.userName,
+        userPwd = req.body.userPwd;
+
+    AdminUsers.findOne({
+        userName,
+        status: 1,
+    }, {
+        _id: 0,
+        __v: 0
+    }, (err, user) => {
+        if (err) {
+            res.json({
+                status: 0,
+                message: err,
+                result: {}
+            })
+        }
+        if (!user) {
+            res.json({
+                status: 0,
+                message: '没有当前用户',
+                result: {}
+            })
+        } else {
+            AdminUsers.findOne({
+                userName,
+                userPwd,
+                status: 1,
+            }, {
+                _id: 0,
+                __v: 0
+            }, (err1, user1) => {
+                if (err1) {
+                    res.json({
+                        status: 0,
+                        message: err1,
+                        result: {}
+                    })
+                }
+                if(!user1){
+                    res.json({
+                        status: 0,
+                        message: '密码错误',
+                        result: {}
+                    })
+                }else{
+                    res.json({
+                        status: 1,
+                        message: '登录成功',
+                        result: user1
+                    })
+                }
+
+            });
+        }
+    });
+
+});
+
+
 module.exports = router;

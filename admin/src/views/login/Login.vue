@@ -6,30 +6,30 @@
                 <el-form-item label=""></el-form-item>
                 <el-form-item label="">
                     <el-input
-                            placeholder="请输入内容"
+                            placeholder="用户名"
                             v-model="userName"
                             clearable>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="">
                     <el-input
-                            placeholder="请输入内容"
+                            placeholder="密码"
                             v-model="userPwd"
                             show-password>
                     </el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">登录</el-button>
+                    <el-button type="primary" @click="login">登录</el-button>
                 </el-form-item>
             </el-form>
         </div>
-        <div class="footer"></div>
         <div class="footer"></div>
     </div>
 </template>
 
 <script>
-
+    import tool from './../../util/verify.js';
+    import storage from './../../util/storage.js';
     export default {
         name: "Login",
         components: {
@@ -45,7 +45,39 @@
 
         },
         methods: {
-
+            login(){
+                if(tool.isNull(this.userName)){
+                    this.$message({
+                        message: '用户名为空',
+                        type: 'error'
+                    });
+                    return
+                }
+                if(tool.isNull(this.userPwd)){
+                    this.$message({
+                        message: '密码为空',
+                        type: 'error'
+                    });
+                    return
+                }
+                this._api.post('/api/users/login',{
+                    userName:this.userName,
+                    userPwd:this.userPwd,
+                },(res)=>{
+                    if(res.status === 0){
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                        return
+                    }
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    });
+                    storage.setLocalStorage('userInfo',res.result)
+                })
+            }
         }
 
     }
@@ -81,6 +113,7 @@
         font-size: 20px;
         font-weight: bold;
         text-align: center;
+        background-color: #fff;
     }
     .login-box button{
         width: 100%;
