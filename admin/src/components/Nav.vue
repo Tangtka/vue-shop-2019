@@ -1,8 +1,5 @@
 <template>
     <div id="Nav">
-
-
-
         <el-menu
             default-active="1-4-1"
             class="el-menu-vertical-demo"
@@ -16,14 +13,14 @@
                     <i class="el-icon-setting"></i>
                     <span slot="title">系统设置</span>
                 </template>
-                <el-menu-item index="/dictionaries">字典管理</el-menu-item>
-                <el-menu-item index="/system">网站设置</el-menu-item>
+                <el-menu-item index="/index/dictionaries">字典管理</el-menu-item>
+                <el-menu-item index="/index/system">网站设置</el-menu-item>
             </el-submenu>
-            <el-menu-item index="/productList">
+            <el-menu-item index="/index/productList">
                 <i class="el-icon-shopping-bag-1"></i>
                 <span slot="title">产品管理</span>
             </el-menu-item>
-            <el-menu-item index="/advertisingList">
+            <el-menu-item index="/index/advertisingList">
                 <i class="el-icon-picture-outline"></i>
                 <span slot="title">广告管理</span>
             </el-menu-item>
@@ -32,10 +29,10 @@
                     <i class="el-icon-user"></i>
                     <span slot="title">账号管理</span>
                 </template>
-                <el-menu-item index="/admin">管理员</el-menu-item>
-                <el-menu-item index="/users">用户</el-menu-item>
+                <el-menu-item index="/index/admin">管理员</el-menu-item>
+                <el-menu-item index="/index/users">用户</el-menu-item>
             </el-submenu>
-            <el-menu-item index="/logs">
+            <el-menu-item index="/index/logs">
                 <i class="el-icon-edit"></i>
                 <span slot="title">操作日志</span>
             </el-menu-item>

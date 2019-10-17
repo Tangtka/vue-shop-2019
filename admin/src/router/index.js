@@ -4,7 +4,7 @@ import {getLocalStorage} from "../util/storage.js";
 
 Vue.use(Router);
 const router = new Router({
-    mode: 'history',
+    mode: 'hash',
     base: process.env.BASE_URL,
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
@@ -23,13 +23,81 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/editProduct'
+            redirect: '/index'
         },
         //首页
         {
             path: '/index',
             name: 'Index',
-            component: () => import('./../views/index/Index.vue')
+            component: () => import('./../views/index/Index.vue'),
+            children:[
+                //系统设置 》 网站设置
+                {
+                    path: '/index/system',
+                    name: 'System',
+                    component: () => import('./../views/systemSettings/System.vue')
+                },
+               //系统设置 》 字典
+                {
+                    path: '/index/dictionaries',
+                    name: 'Dictionaries',
+                    component: () => import('./../views/systemSettings/Dictionaries.vue')
+                },
+                //广告
+                {
+                    path: '/index/advertisingList',
+                    name: 'AdvertisingList',
+                    component: () => import('./../views/advertising/AdvertisingList.vue')
+                },
+                //广告add
+                {
+                    path: '/index/editAdvertising',
+                    name: 'EditAdvertising',
+                    component: () => import('../views/advertising/EditAdvertising.vue')
+                },
+                //用户
+                {
+                    path: '/index/users',
+                    name: 'Users',
+                    component: () => import('./../views/users/Users.vue')
+                },
+                //管理员
+                {
+                    path: '/index/admin',
+                    name: 'Admin',
+                    component: () => import('./../views/users/Admin.vue')
+                },
+                //管理员add
+                {
+                    path: '/index/addUser',
+                    name: 'AddUser',
+                    component: () => import('./../views/users/AddUser.vue')
+                },
+                //管理员edit
+                {
+                    path: '/index/editUser',
+                    name: 'EditUser',
+                    component: () => import('./../views/users/EditUser.vue')
+                },
+                //操作记录
+                {
+                    path: '/index/logs',
+                    name: 'Logs',
+                    component: () => import('./../views/logs/Logs.vue')
+                },
+                //产品管理
+                {
+                    path: '/index/productList',
+                    name: 'ProductList',
+                    component: () => import('./../views/product/ProductList.vue')
+                },
+                //产品管理add
+                {
+                    path: '/index/editProduct',
+                    name: 'EditProduct',
+                    component: () => import('../views/product/EditProduct.vue')
+                }
+            ]
         },
         //登录页
         {
@@ -37,72 +105,7 @@ const router = new Router({
             name: 'Login',
             component: () => import('./../views/login/Login.vue')
         },
-        //系统设置 》 网站设置
-        {
-            path: '/system',
-            name: 'System',
-            component: () => import('./../views/systemSettings/System.vue')
-        },
-        //系统设置 》 字典
-        {
-            path: '/dictionaries',
-            name: 'Dictionaries',
-            component: () => import('./../views/systemSettings/Dictionaries.vue')
-        },
-        //广告
-        {
-            path: '/advertisingList',
-            name: 'AdvertisingList',
-            component: () => import('./../views/advertising/AdvertisingList.vue')
-        },
-        //广告add
-        {
-            path: '/editAdvertising',
-            name: 'EditAdvertising',
-            component: () => import('../views/advertising/EditAdvertising.vue')
-        },
-        //用户
-        {
-            path: '/users',
-            name: 'Users',
-            component: () => import('./../views/users/Users.vue')
-        },
-        //管理员
-        {
-            path: '/admin',
-            name: 'Admin',
-            component: () => import('./../views/users/Admin.vue')
-        },
-        //管理员add
-        {
-            path: '/addUser',
-            name: 'AddUser',
-            component: () => import('./../views/users/AddUser.vue')
-        },
-        //管理员edit
-        {
-            path: '/editUser',
-            name: 'EditUser',
-            component: () => import('./../views/users/EditUser.vue')
-        },
-        //操作记录
-        {
-            path: '/logs',
-            name: 'Logs',
-            component: () => import('./../views/logs/Logs.vue')
-        },
-        //产品管理
-        {
-            path: '/productList',
-            name: 'ProductList',
-            component: () => import('./../views/product/ProductList.vue')
-        },
-        //产品管理add
-        {
-            path: '/editProduct',
-            name: 'EditProduct',
-            component: () => import('../views/product/EditProduct.vue')
-        }
+
 
     ]
 });

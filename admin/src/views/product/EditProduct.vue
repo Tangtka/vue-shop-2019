@@ -101,7 +101,7 @@
         },
         methods: {
             goBack() {
-                this.$router.replace({path: '/productList'})
+                this.$router.replace({path: '/index/productList'})
             },
             coverHandleRemove(file, fileList) {
                 this.coverImg.uploadImgList = [];

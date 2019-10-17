@@ -151,7 +151,7 @@
                 this.formData.advertisingTypeName = ''
             },
             goBack() {
-                this.$router.replace({path: '/advertisingList'});
+                this.$router.replace({path: '/index/advertisingList'});
             },
             getDictionaries(){
                 this._api.post('/api/system/dictionaries/code',{

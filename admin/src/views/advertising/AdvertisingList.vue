@@ -108,10 +108,10 @@
         },
         methods: {
             addAdvertising() {
-                this.$router.push({path: '/editAdvertising', query: {type: 'add'}})
+                this.$router.push({path: '/index/editAdvertising', query: {type: 'add'}})
             },
             editAdvertising(val) {
-                this.$router.push({path: '/editAdvertising', query: {type: 'edit',advertisingId:val}})
+                this.$router.push({path: '/index/editAdvertising', query: {type: 'edit',advertisingId:val}})
             },
             setPageSize(val) {
                 this.page.size = val;

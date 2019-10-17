@@ -105,14 +105,14 @@
             },
             addUser() {
                 this.$router.push({
-                    path: '/addUser', query: {
+                    path: '/index/addUser', query: {
                         type: 'admin'
                     }
                 })
             },
             editUser(val) {
                 this.$router.push({
-                    path: '/editUser', query: {
+                    path: '/index/editUser', query: {
                         type: 'admin',
                         userId:val
                     }

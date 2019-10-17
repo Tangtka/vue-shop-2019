@@ -71,7 +71,7 @@
         },
         methods: {
             goBack() {
-                this.$router.replace({path: '/' + this.type})
+                this.$router.replace({path: '/index/' + this.type})
             },
             selectHandleChange(val) {
                 this.dictionaryList.forEach((item) => {

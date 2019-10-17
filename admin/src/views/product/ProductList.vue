@@ -136,14 +136,14 @@
             },
             addProduct() {
                 this.$router.push({
-                    path: '/editProduct', query: {
+                    path: '/index/editProduct', query: {
                         type: 'add'
                     }
                 })
             },
             editProduct(val) {
                 this.$router.push({
-                    path: '/editProduct', query: {
+                    path: '/index/editProduct', query: {
                         type: 'edit',
                         productId:val
                     }
