@@ -48,7 +48,7 @@
                     <el-button @click="reset">重置</el-button>
                 </el-form-item>
                 <el-form-item v-if="$route.query.type === 'edit'">
-                    <el-button type="primary" @click="add">保存</el-button>
+                    <el-button type="primary" @click="edit">保存</el-button>
                     <el-button @click="goBack">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -166,6 +166,23 @@
             add(){
                 this.formData.productImgList = JSON.stringify(this.formData.productImgList);
                 this._api.post('/api/product/add',this.formData, (res) => {
+                    if (res.status === 1) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.goBack();
+                    } else {
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            edit(){
+                this.formData.productImgList = JSON.stringify(this.formData.productImgList);
+                this._api.post('/api/product/edit',this.formData, (res) => {
                     if (res.status === 1) {
                         this.$message({
                             message: res.message,
